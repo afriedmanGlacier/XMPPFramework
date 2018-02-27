@@ -137,6 +137,18 @@
 		dispatch_async(moduleQueue, block);
 }
 
+- (void)forceFetchvCardTempForJID:(XMPPJID *)jid
+{
+    dispatch_block_t block = ^{ @autoreleasepool {
+        [self _fetchvCardTempForJID:jid];
+    }};
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_async(moduleQueue, block);
+}
+
 - (XMPPvCardTemp *)vCardTempForJID:(XMPPJID *)jid shouldFetch:(BOOL)shouldFetch{
     
     __block XMPPvCardTemp *result;
@@ -159,6 +171,30 @@
 		dispatch_sync(moduleQueue, block);
 	
 	return result;
+}
+
+- (XMPPvCardTemp *)vCardTempForJID:(XMPPJID *)jid forceFetch:(BOOL)forceFetch{
+    
+    __block XMPPvCardTemp *result;
+    
+    dispatch_block_t block = ^{ @autoreleasepool {
+        
+        XMPPvCardTemp *vCardTemp = [_xmppvCardTempModuleStorage vCardTempForJID:jid xmppStream:xmppStream];
+        
+        if (vCardTemp == nil && forceFetch)
+        {
+            [self _fetchvCardTempForJID:jid];
+        }
+        
+        result = vCardTemp;
+    }};
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_sync(moduleQueue, block);
+    
+    return result;
 }
 
 - (XMPPvCardTemp *)myvCardTemp

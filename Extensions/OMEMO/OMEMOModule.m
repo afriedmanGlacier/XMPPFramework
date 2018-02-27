@@ -235,9 +235,16 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
                   iv:(NSData*)iv
                toJID:(XMPPJID*)toJID
              payload:(nullable NSData*)payload
-           elementId:(nullable NSString*)elementId {
+           elementId:(nullable NSString*)elementId
+          expiration:(nullable NSString*)expiration{
     XMPPMessage *message = [self messageForKeyData:keyData iv:iv toJID:toJID payload:payload elementId:elementId];
     if (message) {
+        if (expiration) {
+            NSXMLElement *expiresElement = [NSXMLElement elementWithName:@"x" xmlns:@"jabber:x:msgexpire"];
+            [expiresElement addAttributeWithName:@"seconds" stringValue:expiration];
+            [message addChild:expiresElement];
+        }
+        
         [xmppStream sendElement:message];
     }
 }
@@ -305,7 +312,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     if (ns == OMEMOModuleNamespaceOMEMO) {
         return @"urn:xmpp:omemo:0";
     } else { // OMEMOModuleNamespaceConversationsLegacy
-        return @"eu.siacs.conversations.axolotl";
+        return @"com.glaciersecurity.glaciermessenger.axolotl";
     }
 }
 + (NSString*) xmlnsOMEMODeviceList:(OMEMOModuleNamespace)ns {

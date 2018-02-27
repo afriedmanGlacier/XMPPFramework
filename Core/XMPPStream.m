@@ -197,7 +197,7 @@ enum XMPPStreamConfig
     idTracker = [[XMPPIDTracker alloc] initWithStream:self dispatchQueue:xmppQueue];
 	
 	receipts = [[NSMutableArray alloc] init];
-    preferIPv6 = YES;
+    preferIPv6 = NO;
 }
 
 /**

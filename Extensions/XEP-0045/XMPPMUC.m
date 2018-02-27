@@ -416,6 +416,9 @@ failedToDiscoverRoomsForServiceNamed:serviceName
 	
 	NSXMLElement *feature = [NSXMLElement elementWithName:@"feature"];
 	[feature addAttributeWithName:@"var" stringValue:@"http://jabber.org/protocol/muc"];
+    
+    //for ejabberd mucsub
+    [feature addAttributeWithName:@"var" stringValue:@"urn:xmpp:mucsub:0"];
 	
 	[query addChild:feature];
 }

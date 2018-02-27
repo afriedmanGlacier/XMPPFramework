@@ -847,6 +847,121 @@ enum XMPPRoomState
 	return iqID;
 }
 
+// ejabberd's mucsub
+- (void)handleSubscribeToRoomResponse:(XMPPIQ *)iq withInfo:(id <XMPPTrackingInfo>)info
+{
+    if ([[iq type] isEqualToString:@"result"])
+    {
+        // <iq from='coven@muc.shakespeare.example'
+        //      to='hag66@shakespeare.example'
+        //      type='result'
+        //      id='E6E10350-76CF-40C6-B91B-1EA08C332FC7'>
+        //    <subscribe xmlns='urn:xmpp:mucsub:0'>
+        //          <event node='urn:xmpp:mucsub:nodes:messages' />
+        //          <event node='urn:xmpp:mucsub:nodes:affiliations' />
+        //          <event node='urn:xmpp:mucsub:nodes:subject' />
+        //          <event node='urn:xmpp:mucsub:nodes:config' />
+        //    </subscribe>
+        // </iq>
+        
+        //NSXMLElement *subscribe = [iq elementForName:@"subscribe" xmlns:@"urn:xmpp:mucsub:0"];
+        //NSArray *events = [subscribe elementsForName:@"event"];
+        //need to account for unsubscribe or make a different method for that
+    }
+    else
+    {
+        //[multicastDelegate xmppRoom:self didNotFetchModeratorsList:iq];
+    }
+}
+
+// ejabberd's mucsub
+- (NSString *)subscribeToRoom:(XMPPJID *)userjid withNick:(NSString *)nick
+{
+    NSString *iqID = [xmppStream generateUUID];
+    
+    dispatch_block_t block = ^{ @autoreleasepool {
+        
+        XMPPLogTrace();
+        
+        // <iq from='hag66@shakespeare.example'
+        //      to='coven@muc.shakespeare.example'
+        //      type='set'
+        //      id='E6E10350-76CF-40C6-B91B-1EA08C332FC7'>
+        //    <subscribe xmlns='urn:xmpp:mucsub:0'
+        //      nick='mynick' password='roompassword'>
+        //          <event node='urn:xmpp:mucsub:nodes:messages' />
+        //          <event node='urn:xmpp:mucsub:nodes:affiliations' />
+        //          <event node='urn:xmpp:mucsub:nodes:subject' />
+        //          <event node='urn:xmpp:mucsub:nodes:config' />
+        //    </subscribe>
+        // </iq>
+        
+        NSXMLElement *subscribe = [NSXMLElement elementWithName:@"subscribe" xmlns:@"urn:xmpp:mucsub:0"];
+        [subscribe addAttributeWithName:@"nick" stringValue:nick];
+        
+        NSXMLElement *event = [NSXMLElement elementWithName:@"event"];
+        [event addAttributeWithName:@"node" stringValue:@"urn:xmpp:mucsub:nodes:messages"];
+        [subscribe addChild:event];
+        
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:subscribe];
+        [iq addAttributeWithName:@"from" stringValue:[userjid full]];
+        
+        [xmppStream sendElement:iq];
+        
+        [responseTracker addID:iqID
+                        target:self
+                      selector:@selector(handleSubscribeToRoomResponse:withInfo:)
+                       timeout:60.0];
+        
+    }};
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_async(moduleQueue, block);
+    
+    return iqID;
+}
+
+//ejabberd's mucsub
+- (NSString *)unsubscribeFromRoom:(XMPPJID *)userjid
+{
+    NSString *iqID = [xmppStream generateUUID];
+    
+    dispatch_block_t block = ^{ @autoreleasepool {
+        
+        XMPPLogTrace();
+        
+        // <iq from='hag66@shakespeare.example'
+        //      to='coven@muc.shakespeare.example'
+        //      type='set'
+        //      id='E6E10350-76CF-40C6-B91B-1EA08C332FC7'>
+        //   <unsubscribe xmlns='urn:xmpp:mucsub:0' />
+        // </iq>
+        
+        NSXMLElement *unsubscribe = [NSXMLElement elementWithName:@"unsubscribe" xmlns:@"urn:xmpp:mucsub:0"];
+        
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:unsubscribe];
+        [iq addAttributeWithName:@"from" stringValue:[userjid full]];
+        
+        [xmppStream sendElement:iq];
+        
+        [responseTracker addID:iqID
+                        target:self
+                      selector:@selector(handleSubscribeToRoomResponse:withInfo:)
+                       timeout:60.0];
+        
+    }};
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_async(moduleQueue, block);
+    
+    return iqID;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Leave & Destroy
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1159,6 +1274,12 @@ enum XMPPRoomState
 				if ([xmppRoomStorage respondsToSelector:@selector(handleDidJoinRoom:withNickname:)])
 					[xmppRoomStorage handleDidJoinRoom:self withNickname:myNickname];
 				[multicastDelegate xmppRoomDidJoin:self];
+                
+                // ejabberd mucsub
+                if ([xmppRoomStorage respondsToSelector:@selector(handleSubscription:toJid:withNickname:)]) {
+                    XMPPJID *to = [[presence to] bareJID];
+                    [xmppRoomStorage handleSubscription:self toJid:to withNickname:myNickname];
+                }
 			}
 		}
 		else if (isUnavailable && !isNicknameChange)

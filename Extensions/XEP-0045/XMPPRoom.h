@@ -120,6 +120,10 @@ static NSString *const XMPPMUCOwnerNamespace = @"http://jabber.org/protocol/muc#
 **/
 - (void)configureRoomUsingOptions:(nullable NSXMLElement *)roomConfigForm;
 
+// for ejabberd mucsub
+- (NSString *)subscribeToRoom:(XMPPJID *)userjid withNick:(NSString *)nick;
+- (NSString *)unsubscribeFromRoom:(XMPPJID *)userjid;
+
 - (void)leaveRoom;
 - (void)destroyRoom;
 
@@ -245,6 +249,11 @@ static NSString *const XMPPMUCOwnerNamespace = @"http://jabber.org/protocol/muc#
 **/
 - (void)handleDidJoinRoom:(XMPPRoom *)room withNickname:(NSString *)nickname;
 
+/**
+ * May be used to determine if client should subscribe for notifications when joining a room, and
+ * then perform the subscription. For ejabberd mucsub feature
+ **/
+- (void)handleSubscription:(XMPPRoom *)room toJid:(XMPPJID *)tojid withNickname:(NSString *)nickname;
 
 @end
 

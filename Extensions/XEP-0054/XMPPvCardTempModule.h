@@ -39,10 +39,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)fetchvCardTempForJID:(XMPPJID *)jid ignoreStorage:(BOOL)ignoreStorage;
 
 /**
+ * Fetches the vCardTemp from network for the given JID, even if it thinks its already waiting for it
+ **/
+- (void)forceFetchvCardTempForJID:(XMPPJID *)jid;
+
+/**
  * Returns the vCardTemp for the given JID, this is the equivalent of calling the vCardTempForJID:xmppStream: on the moduleStorage
  * If there is no vCardTemp in the storage for the given jid and shouldFetch is YES, it will automatically fetch it from the network
 **/
 - (nullable XMPPvCardTemp *)vCardTempForJID:(XMPPJID *)jid shouldFetch:(BOOL)shouldFetch;
+
+/**
+ * Returns the vCardTemp for the given JID
+ * If there is no vCardTemp in the storage for the given jid and forceFetch is YES, it will automatically fetch it from the network even if it thinks its already waiting for it.
+ **/
+- (nullable XMPPvCardTemp *)vCardTempForJID:(XMPPJID *)jid forceFetch:(BOOL)forceFetch;
 
 /**
  * Updates myvCard in storage and sends it to the server

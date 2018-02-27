@@ -332,6 +332,7 @@ typedef SCNetworkConnectionFlags SCNetworkReachabilityFlags;
 	// This method is executed on our moduleQueue.
 	
 	// We should not automatically attempt to reconnect when the connection closes.
+    [self setShouldReconnect:NO];
 	[self stop];
 }
 
@@ -639,7 +640,8 @@ static void XMPPReconnectReachabilityCallback(SCNetworkReachabilityRef target, S
                         }
                         else
                         {
-                            [xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
+                            //[xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
+                            [xmppStream connectWithTimeout:(NSTimeInterval)10 error:nil];
                         }
 					}
 					else if ([self shouldRestartReconnect])
