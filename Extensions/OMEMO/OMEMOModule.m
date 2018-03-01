@@ -312,7 +312,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     if (ns == OMEMOModuleNamespaceOMEMO) {
         return @"urn:xmpp:omemo:0";
     } else { // OMEMOModuleNamespaceConversationsLegacy
-        return @"com.glaciersecurity.glaciermessenger.axolotl";
+        return @"eu.siacs.conversations.axolotl";
     }
 }
 + (NSString*) xmlnsOMEMODeviceList:(OMEMOModuleNamespace)ns {
