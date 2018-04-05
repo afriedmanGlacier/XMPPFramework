@@ -31,6 +31,22 @@
     return [self elementForName:@"encrypted" xmlns:[OMEMOModule xmlnsOMEMO:ns]];
 }
 
+/** Child message element wrapped in pubsub format. We only do this because
+ ejabber doesn't send a stripped version of omemo group message stored offline. Should
+ probably be done elsewhere or modify ejabber. */ 
+- (nullable NSXMLElement*) omemo_offlineElement {
+    NSXMLElement *event = [self elementForName:@"event" xmlns:XMLNS_PUBSUB_EVENT];
+    if (!event) { return nil; }
+    NSXMLElement * itemsList = [event elementForName:@"items"];
+    if (!itemsList) { return nil; }
+    NSString *node = [itemsList attributeStringValueForName:@"node"];
+    if (![node isEqualToString:@"urn:xmpp:mucsub:nodes:messages"]) { return nil; }
+    NSXMLElement * item = [itemsList elementForName:@"item"];
+    if (!item) { return nil; }
+    
+    return [item elementForName:@"message"];
+}
+
 - (NSXMLElement*) omemo_headerElement {
     return [self elementForName:@"header"];
 }

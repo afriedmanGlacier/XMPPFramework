@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL) omemo_isEncryptedElement:(OMEMOModuleNamespace)ns;
 /** Child element <encrypted xmlns='urn:xmpp:omemo:0'> */
 - (nullable NSXMLElement*) omemo_encryptedElement:(OMEMOModuleNamespace)ns;
+/** Child message element wrapped in pubsub format */ 
+- (nullable NSXMLElement*) omemo_offlineElement;
 
 
 /** The Device ID is a randomly generated integer between 1 and 2^31 - 1. If zero it means the element was not found. Only works within <encrypted> element. <header sid='27183'> */

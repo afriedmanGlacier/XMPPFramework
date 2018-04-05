@@ -292,7 +292,21 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
         return;
     }
     NSXMLElement *omemo = [message omemo_encryptedElement:self.xmlNamespace];
-    if (!omemo) { return; }
+    if (!omemo)
+    {
+        // check if this is coming from offline storage. Ejabber isn't stripping the offline storage
+        // wrapper from omemo messages before sending so we can miss messages received via that mechanism
+        NSXMLElement *offlinemsg = [message omemo_offlineElement];
+        BOOL msgorig = (message == originalMessage);
+        if (offlinemsg) {
+            message = [XMPPMessage messageFromElement:offlinemsg];
+            omemo = [message omemo_encryptedElement:self.xmlNamespace];
+            if (msgorig) {
+                originalMessage = message;
+            }
+        }
+        if (!omemo) { return; }
+    }
     uint32_t deviceId = [omemo omemo_senderDeviceId];
     NSArray<OMEMOKeyData*>* keyData = [omemo omemo_keyData];
     NSData *iv = [omemo omemo_iv];
