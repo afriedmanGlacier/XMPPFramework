@@ -294,6 +294,10 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  **/
 @property (assign, readwrite) BOOL preferIPv6;
 
+/** This is a hack to update displayName without updating avatar because we can't modify
+ XMPPPresence. See also kXMPPvCardAvatarNoPhotoElement in XMPPvCardAvatarModule. */
+@property (readwrite, assign) BOOL updatingName;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark State
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

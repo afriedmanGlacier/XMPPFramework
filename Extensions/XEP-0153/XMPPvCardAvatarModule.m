@@ -30,6 +30,8 @@
 NSString *const kXMPPvCardAvatarElement = @"x";
 NSString *const kXMPPvCardAvatarNS = @"vcard-temp:x:update";
 NSString *const kXMPPvCardAvatarPhotoElement = @"photo";
+// unorthodox way to update vcard-temp without modifying photo
+NSString *const kXMPPvCardAvatarNoPhotoElement = @"nophoto";
 
 @interface XMPPvCardAvatarModule() {
     __strong XMPPvCardTempModule *_xmppvCardTempModule;
@@ -187,7 +189,11 @@ NSString *const kXMPPvCardAvatarPhotoElement = @"photo";
 
 	NSString *photoHash = [_moduleStorage photoHashForJID:[sender myJID] xmppStream:sender];
 
-	if (photoHash != nil)
+    if (sender.updatingName) {
+        photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarNoPhotoElement stringValue:@"000000"];
+        sender.updatingName = NO;
+    }
+    else if (photoHash != nil)
     {
 	    photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarPhotoElement stringValue:photoHash];
 	} else {
@@ -215,6 +221,11 @@ NSString *const kXMPPvCardAvatarPhotoElement = @"photo";
 	NSXMLElement *photoElement = [xElement elementForName:kXMPPvCardAvatarPhotoElement];
 
 	if (photoElement == nil) {
+        photoElement = [xElement elementForName:kXMPPvCardAvatarNoPhotoElement];
+        if (photoElement != nil) { // used to update display name without modifying avatar
+            [_xmppvCardTempModule forceFetchvCardTempForJID:[presence from]];
+        }
+        
 		return;
 	}
     
