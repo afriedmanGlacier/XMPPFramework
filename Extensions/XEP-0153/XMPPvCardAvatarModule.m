@@ -31,7 +31,7 @@ NSString *const kXMPPvCardAvatarElement = @"x";
 NSString *const kXMPPvCardAvatarNS = @"vcard-temp:x:update";
 NSString *const kXMPPvCardAvatarPhotoElement = @"photo";
 // unorthodox way to update vcard-temp without modifying photo
-NSString *const kXMPPvCardAvatarNoPhotoElement = @"nophoto";
+NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
 
 @interface XMPPvCardAvatarModule() {
     __strong XMPPvCardTempModule *_xmppvCardTempModule;
@@ -189,11 +189,7 @@ NSString *const kXMPPvCardAvatarNoPhotoElement = @"nophoto";
 
 	NSString *photoHash = [_moduleStorage photoHashForJID:[sender myJID] xmppStream:sender];
 
-    if (sender.updatingName) {
-        photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarNoPhotoElement stringValue:@"000000"];
-        sender.updatingName = NO;
-    }
-    else if (photoHash != nil)
+    if (photoHash != nil)
     {
 	    photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarPhotoElement stringValue:photoHash];
 	} else {
@@ -201,6 +197,15 @@ NSString *const kXMPPvCardAvatarNoPhotoElement = @"nophoto";
 	}
 
 	[xElement addChild:photoElement];
+    
+    XMPPvCardTemp *vCardTemp = [_xmppvCardTempModule.xmppvCardTempModuleStorage vCardTempForJID:[sender myJID] xmppStream:sender];
+    if (vCardTemp != nil) {
+        if (vCardTemp.nickname != nil) {
+            NSXMLElement *displayElement = [NSXMLElement elementWithName:kXMPPvCardAvatarDisplayElement stringValue:vCardTemp.nickname];
+            [xElement addChild:displayElement];
+        }
+    }
+    
 	[presence addChild:xElement];
     
 	// Question: If photoElement is nil, should we be adding xElement?
@@ -219,17 +224,16 @@ NSString *const kXMPPvCardAvatarNoPhotoElement = @"nophoto";
 	}
 
 	NSXMLElement *photoElement = [xElement elementForName:kXMPPvCardAvatarPhotoElement];
+    NSXMLElement *displayElement = [xElement elementForName:kXMPPvCardAvatarDisplayElement];
 
-	if (photoElement == nil) {
-        photoElement = [xElement elementForName:kXMPPvCardAvatarNoPhotoElement];
-        if (photoElement != nil) { // used to update display name without modifying avatar
-            [_xmppvCardTempModule forceFetchvCardTempForJID:[presence from]];
-        }
-        
+	if (photoElement == nil && displayElement == nil) {
 		return;
 	}
     
-    NSString *photoHash = [photoElement stringValue];
+    NSString *photoHash = @"";
+    if (photoElement != nil) {
+        photoHash = [photoElement stringValue];
+    }
 
 	XMPPJID *jid = [presence from];
     
@@ -244,7 +248,14 @@ NSString *const kXMPPvCardAvatarNoPhotoElement = @"nophoto";
         } else {
             [_xmppvCardTempModule forceFetchvCardTempForJID:jid];
         }
-	}
+    } else if (displayElement != nil && !([jid.domain hasPrefix:@"conference"])){
+        NSString *displayname = [displayElement stringValue];
+        XMPPvCardTemp *vCardTemp = [_xmppvCardTempModule.xmppvCardTempModuleStorage vCardTempForJID:jid xmppStream:xmppStream];
+        if ([displayname length] > 0 &&
+            (vCardTemp.nickname == nil || !([vCardTemp.nickname isEqualToString:displayname]))) {
+            [_xmppvCardTempModule forceFetchvCardTempForJID:jid];
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
