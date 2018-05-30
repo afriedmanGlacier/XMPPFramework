@@ -240,7 +240,7 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
     NSString *savedPhotoHash = [_moduleStorage photoHashForJID:jid xmppStream:xmppStream];
 
 	// check the hash
-    if ([photoHash caseInsensitiveCompare:savedPhotoHash] != NSOrderedSame
+    if (photoElement != nil && [photoHash caseInsensitiveCompare:savedPhotoHash] != NSOrderedSame
         && !([photoHash length] == 0 && [savedPhotoHash length] == 0)) {
 		//[_xmppvCardTempModule fetchvCardTempForJID:jid ignoreStorage:YES];
         if ([jid.domain hasPrefix:@"conference"]) {
