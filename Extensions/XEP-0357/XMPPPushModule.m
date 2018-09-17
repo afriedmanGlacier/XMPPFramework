@@ -79,7 +79,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             }
             [strongSelf setRegistrationStatus:XMPPPushStatusRegistered forServerJID:options.serverJID];
             [weakMulticast pushModule:strongSelf didRegisterWithResponseIq:responseIq outgoingIq:enableElement];
-        } timeout:30];
+        } timeout:6];
         [self setRegistrationStatus:XMPPPushStatusRegistering forServerJID:options.serverJID];
         [xmppStream sendElement:enableElement];
     }];

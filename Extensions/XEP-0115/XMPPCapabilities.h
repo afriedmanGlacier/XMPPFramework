@@ -116,6 +116,8 @@ NS_ASSUME_NONNULL_BEGIN
 **/
 - (void)fetchCapabilitiesForJID:(XMPPJID *)jid;
 
+- (void)sendDiscoInfoQueryTo:(XMPPJID *)jid withNode:(nullable NSString *)node ver:(nullable NSString *)ver;
+
 /**
  * This module automatically collects my capabilities.
  * See the xmppCapabilities:collectingMyCapabilities: delegate method.
