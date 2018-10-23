@@ -40,6 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isTo:(XMPPJID *)to from:(XMPPJID *)from;
 - (BOOL)isTo:(XMPPJID *)to from:(XMPPJID *)from options:(XMPPJIDCompareOptions)mask;
 
+- (void)setPreEnabled:(BOOL)preEnabled;
+- (BOOL)preEnabled;
+
 @end
 
 NS_ASSUME_NONNULL_END

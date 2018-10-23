@@ -1391,7 +1391,10 @@
 		
 		XMPPStreamManagementIncomingStanza *stanza =
 		  [[XMPPStreamManagementIncomingStanza alloc] initWithStanzaId:nil isHandled:YES];
-		[unackedByClient addObject:stanza];
+        
+        if (![element preEnabled]) {
+            [unackedByClient addObject:stanza];
+        }
 		
 		// Since we know the element is 'handled' we can immediately check to see if we need to send an ack
 		
@@ -1409,7 +1412,10 @@
 		
 		XMPPStreamManagementIncomingStanza *stanza =
 		  [[XMPPStreamManagementIncomingStanza alloc] initWithStanzaId:nil isHandled:NO];
-		[unackedByClient addObject:stanza];
+        
+        if (![element preEnabled]) {
+            [unackedByClient addObject:stanza];
+        }
 		
 		// Query the delegate(s). The Rules:
 		//

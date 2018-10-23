@@ -4,6 +4,7 @@
 
 #import <objc/runtime.h>
 
+static char const * const PreEnabledTagKey = "PreEnabledTag";
 
 @implementation XMPPElement
 
@@ -187,6 +188,21 @@
 	{
 		return NO;
 	}
+}
+
+- (void)setPreEnabled:(BOOL)preEnabled
+{
+    NSNumber *number = [NSNumber numberWithBool: preEnabled];
+    objc_setAssociatedObject(self, PreEnabledTagKey, number, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (BOOL)preEnabled
+{
+    NSNumber *number = objc_getAssociatedObject(self, PreEnabledTagKey);
+    if (number)
+        return [number boolValue];
+    
+    return false;
 }
 
 @end

@@ -112,6 +112,7 @@ enum XMPPStreamConfig
     BOOL skipStartSession;
     BOOL validatesResponses;
     BOOL preferIPv6;
+    BOOL streamMgmtEnabled;
 	
 	id <XMPPSASLAuthentication> auth;
 	id <XMPPCustomBinding> customBinding;
@@ -198,6 +199,7 @@ enum XMPPStreamConfig
 	
 	receipts = [[NSMutableArray alloc] init];
     preferIPv6 = NO;
+    streamMgmtEnabled = NO;
 }
 
 /**
@@ -2840,6 +2842,10 @@ enum XMPPStreamConfig
 	// Notify delegates to allow them to optionally alter/filter the incoming IQ element.
 	
 	SEL selector = @selector(xmppStream:willReceiveIQ:);
+    
+    if (!streamMgmtEnabled) {
+        [iq setPreEnabled:YES];
+    }
 	
 	if (![multicastDelegate hasDelegateThatRespondsToSelector:selector])
 	{
@@ -2914,6 +2920,10 @@ enum XMPPStreamConfig
 	// Notify delegates to allow them to optionally alter/filter the incoming message.
 	
 	SEL selector = @selector(xmppStream:willReceiveMessage:);
+    
+    if (!streamMgmtEnabled) {
+        [message setPreEnabled:YES];
+    }
 	
 	if (![multicastDelegate hasDelegateThatRespondsToSelector:selector])
 	{
@@ -2989,6 +2999,10 @@ enum XMPPStreamConfig
 	// Notify delegates to allow them to optionally alter/filter the incoming presence.
 	
 	SEL selector = @selector(xmppStream:willReceivePresence:);
+    
+    if (!streamMgmtEnabled) {
+        [presence setPreEnabled:YES];
+    }
 	
 	if (![multicastDelegate hasDelegateThatRespondsToSelector:selector])
 	{
@@ -4425,6 +4439,8 @@ enum XMPPStreamConfig
 		
 		// Clear flags
 		flags = 0;
+        
+        streamMgmtEnabled = NO;
 		
 		// Notify delegate
 		
@@ -4652,6 +4668,10 @@ enum XMPPStreamConfig
 		}
 		else if ([customElementNames countForObject:elementName])
 		{
+            if ([elementName isEqualToString:@"enabled"]) {
+                streamMgmtEnabled = YES;
+            }
+            
 			[multicastDelegate xmppStream:self didReceiveCustomElement:element];
 		}
 		else

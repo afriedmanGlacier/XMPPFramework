@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'XMPPFramework'
-  s.version = '4.0-glacier'
+  s.version = '4.0.1-glacier'
 
   s.osx.deployment_target = '10.9'
   s.ios.deployment_target = '8.0'
@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
 	  ss.dependency 'CocoaLumberjack' # Skip pinning version because of the awkward 2.x->3.x transition
 	  ss.dependency 'CocoaAsyncSocket', '~> 7.6.0'
 	  ss.dependency 'KissXML', '~> 5.2.0'
-	  ss.dependency 'libidn', '~> 1.33.0'
+	  ss.dependency 'libidn', '~> 1.35'
   end
 
   s.subspec 'Swift' do |ss|

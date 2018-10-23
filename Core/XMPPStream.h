@@ -317,6 +317,16 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 **/
 @property (atomic, readonly) BOOL isConnected;
 
+/**
+ * Because of acknowledgement bug where server sends IQ before sending enabled message. XMPPFramework
+ * receives them in the correct order, but puts stanzas on async queues for processing. It sometimes
+ * processes the enabled message first, resets its counter and starts counting incoming stanzas. Then
+ * it processes the IQ that it actually received before the enabled message. This causes an incorrect
+ * stanza count to be sent back to the server.
+ * see https://github.com/robbiehanson/XMPPFramework/issues/1101
+ */
+@property (readwrite, assign) BOOL streamMgmtEnabled;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Connect & Disconnect
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
