@@ -193,7 +193,7 @@ static char const * const PreEnabledTagKey = "PreEnabledTag";
 - (void)setPreEnabled:(BOOL)preEnabled
 {
     NSNumber *number = [NSNumber numberWithBool: preEnabled];
-    objc_setAssociatedObject(self, PreEnabledTagKey, number, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, PreEnabledTagKey, number, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (BOOL)preEnabled
