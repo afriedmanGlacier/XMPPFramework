@@ -7,6 +7,7 @@
 //
 
 #import "XMPPSlot.h"
+#import "XMPPPinned.h"
 #import "XMPPModule.h"
 
 NS_ASSUME_NONNULL_BEGIN
