@@ -1056,6 +1056,12 @@
 		DD855F941F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m in Sources */ = {isa = PBXBuildFile; fileRef = DD855F901F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m */; };
 		DD855F951F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m in Sources */ = {isa = PBXBuildFile; fileRef = DD855F901F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m */; };
 		DD855F961F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m in Sources */ = {isa = PBXBuildFile; fileRef = DD855F901F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m */; };
+		F57AFDE822DE230D00BE74DC /* XMPPPinned.m in Sources */ = {isa = PBXBuildFile; fileRef = F57AFDE722DE230D00BE74DC /* XMPPPinned.m */; };
+		F57AFDEA22DE247D00BE74DC /* XMPPPinned.h in Headers */ = {isa = PBXBuildFile; fileRef = F57AFDE922DE233D00BE74DC /* XMPPPinned.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F57AFDEB22DE247E00BE74DC /* XMPPPinned.h in Headers */ = {isa = PBXBuildFile; fileRef = F57AFDE922DE233D00BE74DC /* XMPPPinned.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F57AFDEC22DE247E00BE74DC /* XMPPPinned.h in Headers */ = {isa = PBXBuildFile; fileRef = F57AFDE922DE233D00BE74DC /* XMPPPinned.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F57AFDED22DE249000BE74DC /* XMPPPinned.m in Sources */ = {isa = PBXBuildFile; fileRef = F57AFDE722DE230D00BE74DC /* XMPPPinned.m */; };
+		F57AFDEE22DE249100BE74DC /* XMPPPinned.m in Sources */ = {isa = PBXBuildFile; fileRef = F57AFDE722DE230D00BE74DC /* XMPPPinned.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1799,6 +1805,8 @@
 		DD2AD6DE1F84B49200E0FED2 /* XMPPManagedMessaging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPManagedMessaging.m; sourceTree = "<group>"; };
 		DD855F8F1F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPOutOfBandResourceMessaging.h; sourceTree = "<group>"; };
 		DD855F901F74F2B000E12330 /* XMPPOutOfBandResourceMessaging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XMPPOutOfBandResourceMessaging.m; sourceTree = "<group>"; };
+		F57AFDE722DE230D00BE74DC /* XMPPPinned.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XMPPPinned.m; sourceTree = "<group>"; };
+		F57AFDE922DE233D00BE74DC /* XMPPPinned.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XMPPPinned.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2866,6 +2874,8 @@
 				D9DCD23D1E6250930010D1C7 /* XMPPHTTPFileUpload.m */,
 				D9DCD23E1E6250930010D1C7 /* XMPPSlot.h */,
 				D9DCD23F1E6250930010D1C7 /* XMPPSlot.m */,
+				F57AFDE722DE230D00BE74DC /* XMPPPinned.m */,
+				F57AFDE922DE233D00BE74DC /* XMPPPinned.h */,
 			);
 			path = "XEP-0363";
 			sourceTree = "<group>";
@@ -3113,6 +3123,7 @@
 				D9DCD2831E6250930010D1C7 /* XMPPIQ+JabberRPC.h in Headers */,
 				D9DCD3201E6250930010D1C7 /* XMPPMessageArchiveManagement.h in Headers */,
 				DD1C59831F4429FD003D73DB /* XMPPDelayedDelivery.h in Headers */,
+				F57AFDEA22DE247D00BE74DC /* XMPPPinned.h in Headers */,
 				D9DCD2D61E6250930010D1C7 /* NSDate+XMPPDateTimeProfiles.h in Headers */,
 				D9DCD2BA1E6250930010D1C7 /* XMPPvCardTempAdrTypes.h in Headers */,
 				D9DCD2C81E6250930010D1C7 /* XMPPResultSet.h in Headers */,
@@ -3310,6 +3321,7 @@
 				D9DCD4FC1E6256D90010D1C7 /* XMPPIQ+JabberRPC.h in Headers */,
 				D9DCD4FD1E6256D90010D1C7 /* XMPPMessageArchiveManagement.h in Headers */,
 				DD1C59841F4429FD003D73DB /* XMPPDelayedDelivery.h in Headers */,
+				F57AFDEB22DE247E00BE74DC /* XMPPPinned.h in Headers */,
 				D9DCD4FE1E6256D90010D1C7 /* NSDate+XMPPDateTimeProfiles.h in Headers */,
 				D9DCD4FF1E6256D90010D1C7 /* XMPPvCardTempAdrTypes.h in Headers */,
 				D9DCD5001E6256D90010D1C7 /* XMPPResultSet.h in Headers */,
@@ -3483,6 +3495,7 @@
 				D9DCD65F1E6258CF0010D1C7 /* XMPPIQ+JabberRPC.h in Headers */,
 				D9DCD6601E6258CF0010D1C7 /* XMPPMessageArchiveManagement.h in Headers */,
 				DD1C59851F4429FD003D73DB /* XMPPDelayedDelivery.h in Headers */,
+				F57AFDEC22DE247E00BE74DC /* XMPPPinned.h in Headers */,
 				D9DCD6611E6258CF0010D1C7 /* NSDate+XMPPDateTimeProfiles.h in Headers */,
 				D9DCD6621E6258CF0010D1C7 /* XMPPvCardTempAdrTypes.h in Headers */,
 				D9DCD6631E6258CF0010D1C7 /* XMPPResultSet.h in Headers */,
@@ -3714,6 +3727,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 0D44BAE01E537066000930E0;
@@ -4119,6 +4133,7 @@
 				D9DCD2D71E6250930010D1C7 /* NSDate+XMPPDateTimeProfiles.m in Sources */,
 				DD2AD6EB1F84B49200E0FED2 /* XMPPManagedMessaging.m in Sources */,
 				D9DCD3381E6250930010D1C7 /* XMPPRoomLight.m in Sources */,
+				F57AFDE822DE230D00BE74DC /* XMPPPinned.m in Sources */,
 				0D44BB111E5370ED000930E0 /* XMPPElement.m in Sources */,
 				0D44BB6A1E537110000930E0 /* GCDMulticastDelegate.m in Sources */,
 				D96D6E7E1F8D9701006DEC58 /* XMPPPushModule.m in Sources */,
@@ -4337,6 +4352,7 @@
 				D9DCD4731E6256D90010D1C7 /* NSDate+XMPPDateTimeProfiles.m in Sources */,
 				DD2AD6EC1F84B49200E0FED2 /* XMPPManagedMessaging.m in Sources */,
 				D9DCD4741E6256D90010D1C7 /* XMPPRoomLight.m in Sources */,
+				F57AFDED22DE249000BE74DC /* XMPPPinned.m in Sources */,
 				D9DCD4751E6256D90010D1C7 /* XMPPElement.m in Sources */,
 				D9DCD4761E6256D90010D1C7 /* GCDMulticastDelegate.m in Sources */,
 				D96D6E7F1F8D9701006DEC58 /* XMPPPushModule.m in Sources */,
@@ -4501,6 +4517,7 @@
 				D9DCD5D61E6258CF0010D1C7 /* NSDate+XMPPDateTimeProfiles.m in Sources */,
 				DD2AD6ED1F84B49200E0FED2 /* XMPPManagedMessaging.m in Sources */,
 				D9DCD5D71E6258CF0010D1C7 /* XMPPRoomLight.m in Sources */,
+				F57AFDEE22DE249100BE74DC /* XMPPPinned.m in Sources */,
 				D9DCD5D81E6258CF0010D1C7 /* XMPPElement.m in Sources */,
 				D9DCD5D91E6258CF0010D1C7 /* GCDMulticastDelegate.m in Sources */,
 				D96D6E7D1F8D9701006DEC58 /* XMPPPushModule.m in Sources */,

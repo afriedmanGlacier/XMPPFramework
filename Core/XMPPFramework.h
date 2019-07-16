@@ -164,6 +164,7 @@
 #import "XMPPPushModule.h"
 #import "XMPPHTTPFileUpload.h"
 #import "XMPPSlot.h"
+#import "XMPPPinned.h"
 #import "XMPPMUCLight.h"
 #import "XMPPRoomLight.h"
 #import "XMPPRoomLightCoreDataStorage.h"

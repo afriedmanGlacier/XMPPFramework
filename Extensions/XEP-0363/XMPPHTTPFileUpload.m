@@ -22,6 +22,8 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 NSString *const XMPPHTTPFileUploadNamespace = @"urn:xmpp:http:upload";
 NSString *const XMPPHTTPFileUploadErrorDomain = @"XMPPHTTPFileUploadErrorDomain";
 
+NSString *const XMPPHTTPFilePinningNamespace = @"com.glaciersecurity.glaciermessenger.attachments";
+
 NSString* StringForXMPPHTTPFileUploadErrorCode(XMPPHTTPFileUploadErrorCode errorCode) {
     switch (errorCode) {
         case XMPPHTTPFileUploadErrorCodeUnknown:
@@ -185,6 +187,68 @@ static NSError *ErrorForCode(XMPPHTTPFileUploadErrorCode errorCode) {
 		block();
 	else
 		dispatch_async(moduleQueue, block);
+}
+
+// for use with non-standard attachments mod to ejabberd
+- (void)requestAttachmentsFromGroup:(XMPPJID*)roomJID
+                               from:(XMPPJID*)userJID
+                         completion:(void (^_Nonnull)(XMPPPinned * _Nullable pinned, XMPPIQ * _Nullable resultIq, NSError * _Nullable error))completion {
+    NSParameterAssert(roomJID != nil);
+    NSParameterAssert(userJID != nil);
+    NSParameterAssert(completion != nil);
+    if (!completion) {
+        XMPPLogError(@"XMPPHTTPFileUpload: No completion block specified, aborting...");
+        return;
+    }
+    dispatch_block_t block = ^{ @autoreleasepool {
+        
+        //  <iq type='get' id='e289' from='bob@example.com' to='room@conference.example.com'>
+        //      <attachments xmlns='com.glaciersecurity.glaciermessenger.attachments'/>
+        //  </iq>
+        
+        NSString *iqID = [XMPPStream generateUUID];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:iqID];
+        [iq addAttributeWithName:@"from" stringValue:userJID.bare];
+        
+        XMPPElement *attachments = [XMPPElement elementWithName:@"attachments"];
+        [attachments setXmlns:XMPPHTTPFilePinningNamespace];
+        
+        [iq addChild:attachments];
+        
+        __weak typeof(self) weakSelf = self;
+        [self.responseTracker addID:iqID block:^(id obj, id<XMPPTrackingInfo> info) {
+            __typeof__(self) strongSelf = weakSelf;
+            if (!strongSelf) { return; }
+            NSError *error = nil;
+            XMPPIQ *responseIq = nil;
+            XMPPPinned *pinned = nil;
+            if ([obj isKindOfClass:[XMPPIQ class]]) {
+                responseIq = obj;
+                if ([responseIq isResultIQ]) {
+                    pinned = [[XMPPPinned alloc] initWithIQ:responseIq];
+                }
+                if (!pinned) {
+                    error = ErrorForCode(XMPPHTTPFileUploadErrorCodeBadResponse);
+                }
+            } else {
+                error = ErrorForCode(XMPPHTTPFileUploadErrorCodeNoResponse);
+            }
+            if (!pinned && !error) {
+                error = ErrorForCode(XMPPHTTPFileUploadErrorCodeUnknown);
+            }
+            
+            dispatch_async(moduleQueue, ^{
+                completion(pinned, responseIq, error);
+            });
+        } timeout:60.0];
+        
+        [xmppStream sendElement:iq];
+    }};
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_async(moduleQueue, block);
 }
 
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq

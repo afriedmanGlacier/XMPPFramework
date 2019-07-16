@@ -2457,17 +2457,18 @@ enum XMPPStreamConfig
 				}});
 			}
 			
-			if (modifiedPresence)
-			{
-				dispatch_async(xmppQueue, ^{ @autoreleasepool {
-					
-					if (state == STATE_XMPP_CONNECTED) {
-						[self continueSendPresence:modifiedPresence withTag:tag];
-					} else {
-						[self failToSendPresence:modifiedPresence];
-					}
-				}});
-			}
+            if (modifiedPresence)
+            {
+                //https://github.com/robbiehanson/KissXML/issues/105
+                __block XMPPPresence *newPresence = [modifiedPresence copyWithZone:nil];
+                dispatch_async(xmppQueue, ^{ @autoreleasepool {
+                    if (state == STATE_XMPP_CONNECTED) {
+                        [self continueSendPresence:newPresence withTag:tag];
+                    } else {
+                        [self failToSendPresence:newPresence];
+                    }
+                }});
+            }
 		}});
 	}
 }

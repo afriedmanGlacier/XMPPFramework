@@ -239,6 +239,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
           expiration:(nullable NSString*)expiration{
     XMPPMessage *message = [self messageForKeyData:keyData iv:iv toJID:toJID payload:payload elementId:elementId];
     if (message) {
+        [message addBody:@"Sent encrypted message, need to re-sync keys"];
         if (expiration) {
             NSXMLElement *expiresElement = [NSXMLElement elementWithName:@"x" xmlns:@"jabber:x:msgexpire"];
             [expiresElement addAttributeWithName:@"seconds" stringValue:expiration];

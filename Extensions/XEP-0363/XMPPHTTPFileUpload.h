@@ -44,6 +44,11 @@ extern NSString *const XMPPHTTPFileUploadNamespace;
                    contentType:(NSString*)contentType
                            tag:(nullable id)tag;
 
+// for use with non-standard attachments mod to ejabberd
+- (void)requestAttachmentsFromGroup:(XMPPJID*)roomJID
+                               from:(XMPPJID*)userJID
+                         completion:(void (^_Nonnull)(XMPPPinned * _Nullable pinned, XMPPIQ * _Nullable resultIq, NSError * _Nullable error))completion;
+
 @property (nullable, nonatomic, readonly, copy) NSString *serviceName DEPRECATED_MSG_ATTRIBUTE("XMPPHTTPFileUpload can now handle multiple services. Use requestSlotFromService:filename:size:contentType: instead.");
 
 @end
