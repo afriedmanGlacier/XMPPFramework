@@ -55,6 +55,72 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     }];
 }
 
+/**
+ * Send IQ to server with user/token
+ */
+- (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token elementId:(nullable NSString*)elementId {
+    __weak typeof(self) weakSelf = self;
+    //__weak id weakMulticast = multicastDelegate;
+    
+    [self performBlockAsync:^{
+        NSString *eid = [self fixElementId:elementId];
+        XMPPIQ *registerPushElement = [XMPPIQ registerPushElementWithJID:fromjid tojid:tojid token:token elementId:eid];
+        [self.tracker addElement:registerPushElement block:^(XMPPIQ *responseIq, id<XMPPTrackingInfo> info) {
+            __typeof__(self) strongSelf = weakSelf;
+            if (!strongSelf) { return; }
+            if (!responseIq || [responseIq isErrorIQ]) {
+                // timeout
+                XMPPLogWarn(@"registerPushElement error: %@ %@", registerPushElement, responseIq);
+                //[strongSelf setRegistrationStatus:XMPPPushStatusError forServerJID:options.serverJID];
+                return;
+            }
+            
+            NSXMLElement *command = [responseIq elementForName:@"command" xmlns:XMPPRegisterPushTokenXMLNS];
+            NSXMLElement *x = [command elementForName:@"x" xmlns:@"jabber:x:data"];
+            NSArray <NSXMLElement*> *fields = [x elementsForName:@"field"];
+            
+            if (fields == nil) {
+                return;
+            }
+            
+            __block NSString *node = nil;
+            __block NSString *secret = nil;
+            XMPPJID *serverjid = [XMPPJID jidWithString:tojid];
+            [fields enumerateObjectsUsingBlock:^(NSXMLElement * _Nonnull field, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *var = [field attributeStringValueForName:@"var"];
+                if (var && [var isEqualToString:@"node"]) {
+                    node = [[field elementForName:@"value"] stringValue];
+                } else if (var && [var isEqualToString:@"jid"]) {
+                    //node = [XMPPJID jidWithString:[[field elementForName:@"value"] stringValue]];
+                } else if (var && [var isEqualToString:@"secret"]) {
+                    secret = [[field elementForName:@"value"] stringValue];
+                }
+            }];
+            
+            //send enable
+            NSMutableDictionary *options = [NSMutableDictionary dictionary];
+            //[options setObject:token forKey:@"token"];
+            [options setObject:secret forKey:@"secret"];
+            
+            //[options setObject:tojid forKey:@"endpoint"];
+            XMPPPushOptions *pushOptions = [[XMPPPushOptions alloc] initWithServerJID:serverjid node:node formOptions:options];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [strongSelf registerForPushWithOptions:pushOptions elementId:nil];
+                    });
+                }
+            });
+            
+            //[strongSelf setRegistrationStatus:XMPPPushStatusRegistered forServerJID:options.serverJID];
+        } timeout:6];
+        //[self setRegistrationStatus:XMPPPushStatusRegistering forServerJID:options.serverJID];
+        [self->xmppStream sendElement:registerPushElement];
+    }];
+}
+
+
 /** Manually refresh your push registration */
 - (void) registerForPushWithOptions:(XMPPPushOptions*)options
                           elementId:(nullable NSString*)elementId {

@@ -12,6 +12,7 @@
 #import "XMPPStream.h"
 
 NSString *const XMPPPushXMLNS = @"urn:xmpp:push:0";
+NSString *const XMPPRegisterPushTokenXMLNS = @"http://jabber.org/protocol/commands";
 
 @implementation XMPPIQ (XEP0357)
 
@@ -66,6 +67,52 @@ NSString *const XMPPPushXMLNS = @"urn:xmpp:push:0";
         [disableElement addAttributeWithName:@"node" stringValue:node];
     }
     return [self iqWithType:@"set" elementID:elementId child:disableElement];
+}
+
+/** registerPush IQ, documented here: https://github.com/iNPUTmice/p2/blob/master/README.md#what-conversations-sends-to-the-app-server
+    <iq from="xiaomia1@jabber.de/Conversations.sAdA" id="cXo5bNCF6wgD" to="p2.siacs.eu" type="set">
+        <command xmlns="http://jabber.org/protocol/commands" action="execute" node="register-push-fcm">
+            <x xmlns="jabber:x:data" type="submit">
+                <field var="token">
+                <value>eeDXSJjASJY:APA91bEKxhXK54-vHhY9O55JmU2R0nDJL2rRENm-W9uPY6x3jHi0i0OyvPu6js9jVPZqDeX9ZQydZCBZE19o7a0kK4_n88fCgufXjaOlvalh9VibB2zOI7dQRTaDNB3H5s4dicpWD0m4</value>
+                </field>
+                <field var="device-id">
+                    <value>92afd7a91cdba9a0</value>
+                </field>
+            </x>
+        </command>
+    </iq>
+ */
++ (instancetype)registerPushElementWithJID:(XMPPJID *)fromjid tojid:(NSString *)tojid token:(NSString *)token elementId:(NSString *)elementId
+{
+    if (!elementId) {
+        elementId = [XMPPStream generateUUID];
+    }
+    NSXMLElement *commandElement = [self elementWithName:@"command" xmlns:XMPPRegisterPushTokenXMLNS];
+    [commandElement addAttributeWithName:@"action" stringValue:@"execute"];
+    [commandElement addAttributeWithName:@"node" stringValue:@"register-push-apns"];
+    
+    NSXMLElement *dataForm = [self elementWithName:@"x" xmlns:@"jabber:x:data"];
+    [dataForm addAttributeWithName:@"type" stringValue:@"submit"];
+    NSXMLElement *tokenField = [NSXMLElement elementWithName:@"field"];
+    [tokenField addAttributeWithName:@"var" stringValue:@"token"];
+    [tokenField addChild:[NSXMLElement elementWithName:@"value" stringValue:token]];
+    [dataForm addChild:tokenField];
+    
+    NSXMLElement *idField = [NSXMLElement elementWithName:@"field"];
+    [idField addAttributeWithName:@"var" stringValue:@"device-id"];
+    UIDevice *currentDevice = [UIDevice currentDevice];
+    NSString *deviceId = [[currentDevice identifierForVendor] UUIDString];
+    [idField addChild:[NSXMLElement elementWithName:@"value" stringValue:deviceId]];
+    [dataForm addChild:idField];
+    
+    [commandElement addChild:dataForm];
+    
+    XMPPIQ *iq = [self iqWithType:@"set" elementID:elementId child:commandElement];
+    [iq addAttributeWithName:@"from" stringValue:[fromjid full]];
+    [iq addAttributeWithName:@"to" stringValue:tojid];
+    
+    return iq;
 }
 
 @end

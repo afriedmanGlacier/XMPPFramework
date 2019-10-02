@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
                             node:(nullable NSString*)node
                        elementId:(nullable NSString*)elementId;
 
+- (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token elementId:(nullable NSString*)elementId;
+
 /** This will trigger the same logic as xmppStreamDidAuthenticate: */
 - (void) refresh;
 

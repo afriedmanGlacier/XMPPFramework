@@ -12,6 +12,7 @@
  XMPPIQ (XEP0357) is a class extension on XMPPIQ for creating the elements for XEP-0357 http://xmpp.org/extensions/xep-0357.html
  */
 extern NSString * __nonnull  const XMPPPushXMLNS;
+extern NSString * __nonnull  const XMPPRegisterPushTokenXMLNS;
 
 @interface XMPPIQ (XEP0357)
 
@@ -55,5 +56,6 @@ extern NSString * __nonnull  const XMPPPushXMLNS;
  */
 + (nonnull instancetype)disableNotificationsElementWithJID:(nonnull XMPPJID *)jid node:(nullable NSString *)node elementId:(nullable NSString*)elementId;
 
++ (nonnull instancetype)registerPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid token:(nonnull NSString *)token elementId:(nullable NSString *)elementId;
 
 @end

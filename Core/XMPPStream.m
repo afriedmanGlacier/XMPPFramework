@@ -2514,7 +2514,15 @@ enum XMPPStreamConfig
 	NSAssert(dispatch_get_specific(xmppQueueTag), @"Invoked on incorrect queue");
 	NSAssert(state == STATE_XMPP_CONNECTED, @"Invoked with incorrect state");
 	
-	NSString *outgoingStr = [presence compactXMLString];
+    NSString *outgoingStr = nil;
+    @try {
+        outgoingStr = [presence compactXMLString];
+    }
+    @catch (id exc) {
+        return;
+    }
+    
+    if (outgoingStr == nil) { return;}
 	NSData *outgoingData = [outgoingStr dataUsingEncoding:NSUTF8StringEncoding];
 	
 	XMPPLogSend(@"SEND: %@", outgoingStr);
