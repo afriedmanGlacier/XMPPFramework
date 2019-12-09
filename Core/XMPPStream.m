@@ -53,6 +53,9 @@ NSString *const XMPPStreamDidChangeMyJIDNotification = @"XMPPStreamDidChangeMyJI
 
 const NSTimeInterval XMPPStreamTimeoutNone = -1;
 
+NSString *const XMPPStandardBindXMLNS = @"urn:ietf:params:xml:ns:xmpp-bind";
+NSString *const XMPPGlacierBindXMLNS = @"com.glaciersecurity.glaciermessenger.bind";
+
 enum XMPPStreamFlags
 {
 	kP2PInitiator                 = 1 << 0,  // If set, we are the P2P initializer
@@ -143,6 +146,8 @@ enum XMPPStreamConfig
 	NSCountedSet *customElementNames;
 	
 	id userTag;
+    
+    BOOL glacierBind;
 }
 
 @end
@@ -200,6 +205,8 @@ enum XMPPStreamConfig
 	receipts = [[NSMutableArray alloc] init];
     preferIPv6 = NO;
     streamMgmtEnabled = NO;
+    
+    glacierBind = NO;
 }
 
 /**
@@ -3568,9 +3575,13 @@ enum XMPPStreamConfig
 	
 	// Check to see if resource binding is required
 	// Don't forget about that NSXMLElement bug you reported to apple (xmlns is required or element won't be found)
-	NSXMLElement *f_bind = [features elementForName:@"bind" xmlns:@"urn:ietf:params:xml:ns:xmpp-bind"];
-	
-	if (f_bind)
+	NSXMLElement *f_bind = [features elementForName:@"bind" xmlns:XMPPStandardBindXMLNS];
+    NSXMLElement *g_bind = [features elementForName:@"bind" xmlns:XMPPGlacierBindXMLNS];
+    if (g_bind) {
+        glacierBind = YES;
+    }
+    
+    if (g_bind || f_bind) {
 	{
 		// Start the binding process
 		[self startBinding];
@@ -3867,7 +3878,10 @@ enum XMPPStreamConfig
 		NSXMLElement *resource = [NSXMLElement elementWithName:@"resource"];
 		[resource setStringValue:requestedResource];
 		
-		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:@"urn:ietf:params:xml:ns:xmpp-bind"];
+		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPStandardBindXMLNS];
+        if (glacierBind) {
+            bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPGlacierBindXMLNS];
+        }
 		[bind addChild:resource];
 		
 		XMPPIQ *iq = [XMPPIQ iqWithType:@"set" elementID:[self generateUUID]];
@@ -3892,7 +3906,10 @@ enum XMPPStreamConfig
 	{
 		// The user didn't specify a resource, so we ask the server to bind one for us
 		
-		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:@"urn:ietf:params:xml:ns:xmpp-bind"];
+		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPStandardBindXMLNS];
+        if (glacierBind) {
+            bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPGlacierBindXMLNS];
+        }
 		
 		XMPPIQ *iq = [XMPPIQ iqWithType:@"set" elementID:[self generateUUID]];
 		[iq addChild:bind];
@@ -3920,7 +3937,10 @@ enum XMPPStreamConfig
 	
 	XMPPLogTrace();
 	
-	NSXMLElement *r_bind = [response elementForName:@"bind" xmlns:@"urn:ietf:params:xml:ns:xmpp-bind"];
+	NSXMLElement *r_bind = [response elementForName:@"bind" xmlns:XMPPStandardBindXMLNS];
+    if (glacierBind) {
+        r_bind = [response elementForName:@"bind" xmlns:XMPPGlacierBindXMLNS];
+    }
 	NSXMLElement *r_jid = [r_bind elementForName:@"jid"];
 	
 	if (r_jid)
@@ -3999,6 +4019,22 @@ enum XMPPStreamConfig
 				}});
 			}
         }
+        else if ([r_error elementForName:@"not-allowed"  xmlns:@"urn:ietf:params:xml:ns:xmpp-stanzas"])
+        {
+            //stop trying to connect
+            [self endConnectTimeout];
+            
+            NSString *errMsg = @"The server does not support this binding.";
+            NSDictionary *info = @{NSLocalizedDescriptionKey : errMsg};
+            
+            otherError = [NSError errorWithDomain:XMPPStreamErrorDomain code:XMPPStreamUnsupportedAction userInfo:info];
+            
+            // Close the TCP connection.
+            [self disconnect];
+            
+            // The socketDidDisconnect:withError: method will handle everything else
+            return;
+        }
 		else
 		{
 			// Appears to be a conflicting resource, but server didn't specify conflict
@@ -4020,7 +4056,10 @@ enum XMPPStreamConfig
 		NSXMLElement *resource = [NSXMLElement elementWithName:@"resource"];
 		[resource setStringValue:alternativeResource];
 		
-		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:@"urn:ietf:params:xml:ns:xmpp-bind"];
+		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPStandardBindXMLNS];
+        if (glacierBind) {
+            bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPGlacierBindXMLNS];
+        }
 		[bind addChild:resource];
 		
 		XMPPIQ *iq = [XMPPIQ iqWithType:@"set"];
@@ -4047,7 +4086,10 @@ enum XMPPStreamConfig
 	{
 		// We'll simply let the server choose then
 		
-		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:@"urn:ietf:params:xml:ns:xmpp-bind"];
+		NSXMLElement *bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPStandardBindXMLNS];
+        if (glacierBind) {
+            bind = [NSXMLElement elementWithName:@"bind" xmlns:XMPPGlacierBindXMLNS];
+        }
 		
 		XMPPIQ *iq = [XMPPIQ iqWithType:@"set"];
 		[iq addChild:bind];
