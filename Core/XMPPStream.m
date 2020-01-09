@@ -3582,7 +3582,6 @@ enum XMPPStreamConfig
     }
     
     if (g_bind || f_bind) {
-	{
 		// Start the binding process
 		[self startBinding];
 		
