@@ -70,8 +70,8 @@
 		
 		[self stopRecalibrationTimer];
 		
-		[xmppTime deactivate];
-		awaitingQueryResponse = NO;
+        [self->xmppTime deactivate];
+        self->awaitingQueryResponse = NO;
 		
 		[[NSNotificationCenter defaultCenter] removeObserver:self];
 		
@@ -120,19 +120,19 @@
 {
 	dispatch_block_t block = ^{
 		
-		if (recalibrationInterval != interval)
+        if (self->recalibrationInterval != interval)
 		{
-			recalibrationInterval = interval;
+            self->recalibrationInterval = interval;
 			
 			// Update the recalibrationTimer.
 			// 
 			// Depending on new value and current state of the recalibrationTimer,
 			// this may mean starting, stoping, or simply updating the timer.
 			
-			if (recalibrationInterval > 0)
+            if (self->recalibrationInterval > 0)
 			{
 				// Remember: Only start the timer after the xmpp stream is up and authenticated
-				if ([xmppStream isAuthenticated])
+                if ([self->xmppStream isAuthenticated])
 					[self startRecalibrationTimer];
 			}
 			else
@@ -169,9 +169,9 @@
 {
 	dispatch_block_t block = ^{
 		
-		if (![targetJID isEqualToJID:jid])
+        if (![self->targetJID isEqualToJID:jid])
 		{
-			targetJID = jid;
+            self->targetJID = jid;
 		}
 	};
 	
@@ -276,10 +276,10 @@
 		
 		// Calculate system clock change
 		
-		NSDate *oldSysTime = systemUptimeChecked;
+        NSDate *oldSysTime = self->systemUptimeChecked;
 		NSDate *newSysTime = now;
 		
-		NSTimeInterval oldSysUptime = systemUptime;
+        NSTimeInterval oldSysUptime = self->systemUptime;
 		NSTimeInterval newSysUptime = sysUptime;
 		
 		NSTimeInterval sysTimeDiff = [newSysTime timeIntervalSinceDate:oldSysTime];
@@ -289,13 +289,13 @@
 		
 		// Modify timeDifference & notify delegate
 		
-		timeDifference += sysClockChange;
-		[multicastDelegate xmppAutoTime:self didUpdateTimeDifference:timeDifference];
+        self->timeDifference += sysClockChange;
+        [self->multicastDelegate xmppAutoTime:self didUpdateTimeDifference:self->timeDifference];
 		
 		// Dont forget to update our variables
 		
 		self.systemUptimeChecked = now;
-		systemUptime = sysUptime;
+        self->systemUptime = sysUptime;
 		
 	}});
 }

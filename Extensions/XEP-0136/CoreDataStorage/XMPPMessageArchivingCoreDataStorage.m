@@ -278,7 +278,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 	__block NSString *result = nil;
 	
 	dispatch_block_t block = ^{
-		result = messageEntityName;
+        result = self->messageEntityName;
 	};
 	
 	if (dispatch_get_specific(storageQueueTag))
@@ -292,7 +292,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 - (void)setMessageEntityName:(NSString *)entityName
 {
 	dispatch_block_t block = ^{
-		messageEntityName = entityName;
+        self->messageEntityName = entityName;
 	};
 	
 	if (dispatch_get_specific(storageQueueTag))
@@ -306,7 +306,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 	__block NSString *result = nil;
 	
 	dispatch_block_t block = ^{
-		result = contactEntityName;
+        result = self->contactEntityName;
 	};
 	
 	if (dispatch_get_specific(storageQueueTag))
@@ -320,7 +320,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
 - (void)setContactEntityName:(NSString *)entityName
 {
 	dispatch_block_t block = ^{
-		contactEntityName = entityName;
+        self->contactEntityName = entityName;
 	};
 	
 	if (dispatch_get_specific(storageQueueTag))
@@ -350,7 +350,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
     __block NSArray *result;
     
     dispatch_block_t block = ^{
-        result = relevantContentXPaths;
+        result = self->relevantContentXPaths;
     };
     
     if (dispatch_get_specific(storageQueueTag))
@@ -366,7 +366,7 @@ static XMPPMessageArchivingCoreDataStorage *sharedInstance;
     NSArray *newValue = [relevantContentXPathsToSet copy];
     
     dispatch_block_t block = ^{
-        relevantContentXPaths = newValue;
+        self->relevantContentXPaths = newValue;
     };
     
     if (dispatch_get_specific(storageQueueTag))

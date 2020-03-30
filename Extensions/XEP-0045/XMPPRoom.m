@@ -83,8 +83,8 @@ enum XMPPRoomState
 			[self leaveRoom];
 		}
 		
-		[responseTracker removeAllIDs];
-		responseTracker = nil;
+        [self->responseTracker removeAllIDs];
+        self->responseTracker = nil;
 		
 	}};
 	
@@ -191,7 +191,7 @@ enum XMPPRoomState
 	__block BOOL result = 0;
 	
 	dispatch_block_t block = ^{
-		result = (state & kXMPPRoomStateJoined) ? YES : NO;
+        result = (self->state & kXMPPRoomStateJoined) ? YES : NO;
 	};
 	
 	if (dispatch_get_specific(moduleQueueTag))
@@ -250,7 +250,7 @@ enum XMPPRoomState
 {
 	dispatch_block_t block = ^{ @autoreleasepool {
 		
-		XMPPLogTrace2(@"%@[%@] - %@", THIS_FILE, roomJID, THIS_METHOD);
+		XMPPLogTrace2(@"%@[%@] - %@", THIS_FILE, self->roomJID, THIS_METHOD);
 		
 		// Check state and update variables
 		
@@ -276,12 +276,12 @@ enum XMPPRoomState
 			[x addChild:[NSXMLElement elementWithName:@"password" stringValue:passwd]];
 		}
 		
-		XMPPPresence *presence = [XMPPPresence presenceWithType:nil to:myRoomJID];
-		[presence addChild:x];
+		XMPPPresence *presence = [XMPPPresence presenceWithType:nil to:self->myRoomJID];
+        [presence addChild:x];
 		
-		[xmppStream sendElement:presence];
+        [self->xmppStream sendElement:presence];
 		
-		state |= kXMPPRoomStateJoining;
+        self->state |= kXMPPRoomStateJoining;
 		
 	}};
 	
@@ -340,17 +340,17 @@ enum XMPPRoomState
 		// <iq type='get'
 		//       id='config1'
 		//       to='coven@chat.shakespeare.lit'>
-		//   <query xmlns='http://jabber.org/protocol/muc#owner'/>
+        //   <query xmlns='http://jabber.org/protocol/muc#owner'/>
 		// </iq>
 		
-		NSString *fetchID = [xmppStream generateUUID];
+        NSString *fetchID = [self->xmppStream generateUUID];
 		
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCOwnerNamespace];
-		XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:fetchID child:query];
+		XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:self->roomJID elementID:fetchID child:query];
 		
-		[xmppStream sendElement:iq];
+		[self->xmppStream sendElement:iq];
 		
-		[responseTracker addID:fetchID
+		[self->responseTracker addID:fetchID
 		                target:self
 		              selector:@selector(handleConfigurationFormResponse:withInfo:)
 		               timeout:60.0];
@@ -412,13 +412,13 @@ enum XMPPRoomState
 			NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCOwnerNamespace];
 			[query addChild:x];
 			
-			NSString *iqID = [xmppStream generateUUID];
+			NSString *iqID = [self->xmppStream generateUUID];
 			
-			XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:query];
+			XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:self->roomJID elementID:iqID child:query];
 			
-			[xmppStream sendElement:iq];
+			[self->xmppStream sendElement:iq];
 			
-			[responseTracker addID:iqID
+			[self->responseTracker addID:iqID
 			                target:self
 			              selector:@selector(handleConfigureRoomResponse:withInfo:)
 			               timeout:60.0];
@@ -442,13 +442,13 @@ enum XMPPRoomState
 			NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCOwnerNamespace];
 			[query addChild:x];
 			
-			NSString *iqID = [xmppStream generateUUID];
+            NSString *iqID = [self->xmppStream generateUUID];
 			
-			XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:query];
+            XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:self->roomJID elementID:iqID child:query];
 			
-			[xmppStream sendElement:iq];
+            [self->xmppStream sendElement:iq];
 			
-			[responseTracker addID:iqID
+            [self->responseTracker addID:iqID
 			                target:self
 			              selector:@selector(handleConfigureRoomResponse:withInfo:)
 			               timeout:60.0];
@@ -520,7 +520,7 @@ enum XMPPRoomState
 		//   </query>
 		// </iq>
 		
-		NSString *fetchID = [xmppStream generateUUID];
+        NSString *fetchID = [self->xmppStream generateUUID];
 		
 		NSXMLElement *item = [NSXMLElement elementWithName:@"item"];
 		[item addAttributeWithName:@"affiliation" stringValue:@"outcast"];
@@ -528,11 +528,11 @@ enum XMPPRoomState
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCAdminNamespace];
 		[query addChild:item];
 		
-		XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:fetchID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:self->roomJID elementID:fetchID child:query];
 		
-		[xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
 		
-		[responseTracker addID:fetchID
+        [self->responseTracker addID:fetchID
 		               target:self
 		             selector:@selector(handleFetchBanListResponse:withInfo:)
 		              timeout:60.0];
@@ -581,7 +581,7 @@ enum XMPPRoomState
 		//   </query>
 		// </iq>
 		
-		NSString *fetchID = [xmppStream generateUUID];
+        NSString *fetchID = [self->xmppStream generateUUID];
 		
 		NSXMLElement *item = [NSXMLElement elementWithName:@"item"];
 		[item addAttributeWithName:@"affiliation" stringValue:@"member"];
@@ -589,11 +589,11 @@ enum XMPPRoomState
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCAdminNamespace];
 		[query addChild:item];
 		
-		XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:fetchID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:self->roomJID elementID:fetchID child:query];
 		
-		[xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
 		
-		[responseTracker addID:fetchID
+        [self->responseTracker addID:fetchID
 		               target:self
 		             selector:@selector(handleFetchMembersListResponse:withInfo:)
 		              timeout:60.0];
@@ -644,7 +644,7 @@ enum XMPPRoomState
         //   </query>
         // </iq>
         
-        NSString *fetchID = [xmppStream generateUUID];
+        NSString *fetchID = [self->xmppStream generateUUID];
         
         NSXMLElement *item = [NSXMLElement elementWithName:@"item"];
         [item addAttributeWithName:@"affiliation" stringValue:@"admin"];
@@ -652,11 +652,11 @@ enum XMPPRoomState
         NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCAdminNamespace];
         [query addChild:item];
         
-        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:fetchID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:self->roomJID elementID:fetchID child:query];
         
-        [xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
         
-        [responseTracker addID:fetchID
+        [self->responseTracker addID:fetchID
                         target:self
                       selector:@selector(handleFetchAdminsListResponse:withInfo:)
                        timeout:60.0];
@@ -707,7 +707,7 @@ enum XMPPRoomState
         //   </query>
         // </iq>
         
-        NSString *fetchID = [xmppStream generateUUID];
+        NSString *fetchID = [self->xmppStream generateUUID];
         
         NSXMLElement *item = [NSXMLElement elementWithName:@"item"];
         [item addAttributeWithName:@"affiliation" stringValue:@"owner"];
@@ -715,11 +715,11 @@ enum XMPPRoomState
         NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCAdminNamespace];
         [query addChild:item];
         
-        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:fetchID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:self->roomJID elementID:fetchID child:query];
         
-        [xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
         
-        [responseTracker addID:fetchID
+        [self->responseTracker addID:fetchID
                         target:self
                       selector:@selector(handleFetchOwnersListResponse:withInfo:)
                        timeout:60.0];
@@ -768,7 +768,7 @@ enum XMPPRoomState
 		//   </query>
 		// </iq>
 		
-		NSString *fetchID = [xmppStream generateUUID];
+        NSString *fetchID = [self->xmppStream generateUUID];
 		
 		NSXMLElement *item = [NSXMLElement elementWithName:@"item"];
 		[item addAttributeWithName:@"role" stringValue:@"moderator"];
@@ -776,11 +776,11 @@ enum XMPPRoomState
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCAdminNamespace];
 		[query addChild:item];
 		
-		XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:roomJID elementID:fetchID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:self->roomJID elementID:fetchID child:query];
 		
-		[xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
 		
-		[responseTracker addID:fetchID
+        [self->responseTracker addID:fetchID
 		               target:self
 		             selector:@selector(handleFetchModeratorsListResponse:withInfo:)
 		              timeout:60.0];
@@ -828,11 +828,11 @@ enum XMPPRoomState
 			[query addChild:item];
 		}
 		
-		XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:self->roomJID elementID:iqID child:query];
 		
-		[xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
 		
-		[responseTracker addID:iqID
+        [self->responseTracker addID:iqID
 		                target:self
 		              selector:@selector(handleEditRoomPrivilegesResponse:withInfo:)
 		               timeout:60.0];
@@ -903,12 +903,12 @@ enum XMPPRoomState
         [event addAttributeWithName:@"node" stringValue:@"urn:xmpp:mucsub:nodes:messages"];
         [subscribe addChild:event];
         
-        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:subscribe];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:self->roomJID elementID:iqID child:subscribe];
         [iq addAttributeWithName:@"from" stringValue:[userjid full]];
         
-        [xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
         
-        [responseTracker addID:iqID
+        [self->responseTracker addID:iqID
                         target:self
                       selector:@selector(handleSubscribeToRoomResponse:withInfo:)
                        timeout:60.0];
@@ -941,12 +941,12 @@ enum XMPPRoomState
         
         NSXMLElement *unsubscribe = [NSXMLElement elementWithName:@"unsubscribe" xmlns:@"urn:xmpp:mucsub:0"];
         
-        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:unsubscribe];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:self->roomJID elementID:iqID child:unsubscribe];
         [iq addAttributeWithName:@"from" stringValue:[userjid full]];
         
-        [xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
         
-        [responseTracker addID:iqID
+        [self->responseTracker addID:iqID
                         target:self
                       selector:@selector(handleSubscribeToRoomResponse:withInfo:)
                        timeout:60.0];
@@ -975,14 +975,14 @@ enum XMPPRoomState
 		// <presence type='unavailable' to='darkcave@chat.shakespeare.lit/thirdwitch'/>
 		
 		XMPPPresence *presence = [XMPPPresence presence];
-		[presence addAttributeWithName:@"to" stringValue:[myRoomJID full]];
+        [presence addAttributeWithName:@"to" stringValue:[self->myRoomJID full]];
 		[presence addAttributeWithName:@"type" stringValue:@"unavailable"];
 		
-		[xmppStream sendElement:presence];
+        [self->xmppStream sendElement:presence];
 		
-		state &= ~kXMPPRoomStateJoining;
-		state &= ~kXMPPRoomStateJoined;
-		state |=  kXMPPRoomStateLeaving;
+        self->state &= ~kXMPPRoomStateJoining;
+        self->state &= ~kXMPPRoomStateJoined;
+        self->state |=  kXMPPRoomStateLeaving;
 		
 	}};
 	
@@ -1023,13 +1023,13 @@ enum XMPPRoomState
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:XMPPMUCOwnerNamespace];
 		[query addChild:destroy];
 		
-		NSString *iqID = [xmppStream generateUUID];
+        NSString *iqID = [self->xmppStream generateUUID];
 		
-		XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:roomJID elementID:iqID child:query];
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:self->roomJID elementID:iqID child:query];
 		
-		[xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
 		
-		[responseTracker addID:iqID
+        [self->responseTracker addID:iqID
 			                target:self
 			              selector:@selector(handleDestroyRoomResponse:withInfo:)
 			               timeout:60.0];
@@ -1080,10 +1080,10 @@ enum XMPPRoomState
         }
         
         XMPPMessage *message = [XMPPMessage message];
-        [message addAttributeWithName:@"to" stringValue:[roomJID full]];
+        [message addAttributeWithName:@"to" stringValue:[self->roomJID full]];
         [message addChild:x];
         
-        [xmppStream sendElement:message];
+        [self->xmppStream sendElement:message];
         
     }};
     
@@ -1109,10 +1109,10 @@ enum XMPPRoomState
 		
 		XMPPLogTrace();
 				
-		[message addAttributeWithName:@"to" stringValue:[roomJID full]];
+        [message addAttributeWithName:@"to" stringValue:[self->roomJID full]];
 		[message addAttributeWithName:@"type" stringValue:@"groupchat"];
 		
-		[xmppStream sendElement:message];
+        [self->xmppStream sendElement:message];
 		
 	}};
 	

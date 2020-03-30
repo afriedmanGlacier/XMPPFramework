@@ -61,7 +61,7 @@ static NSError *ErrorForCode(XMPPHTTPFileUploadErrorCode errorCode) {
 	dispatch_block_t block = ^{ @autoreleasepool {
 
 		[self.responseTracker removeAllIDs];
-		_responseTracker = nil;
+        self->_responseTracker = nil;
 
 	}};
 
@@ -180,7 +180,7 @@ static NSError *ErrorForCode(XMPPHTTPFileUploadErrorCode errorCode) {
             });
         } timeout:60.0];
 		
-		[xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
 	}};
 
 	if (dispatch_get_specific(moduleQueueTag))
@@ -237,12 +237,12 @@ static NSError *ErrorForCode(XMPPHTTPFileUploadErrorCode errorCode) {
                 error = ErrorForCode(XMPPHTTPFileUploadErrorCodeUnknown);
             }
             
-            dispatch_async(moduleQueue, ^{
+            dispatch_async(strongSelf->moduleQueue, ^{
                 completion(pinned, responseIq, error);
             });
         } timeout:60.0];
         
-        [xmppStream sendElement:iq];
+        [self->xmppStream sendElement:iq];
     }};
     
     if (dispatch_get_specific(moduleQueueTag))

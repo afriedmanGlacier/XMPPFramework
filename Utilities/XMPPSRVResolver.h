@@ -29,6 +29,7 @@ extern NSString *const XMPPSRVResolverErrorDomain;
 - (void)stop;
 
 + (NSString *)srvNameFromXMPPDomain:(NSString *)xmppDomain;
++ (NSString *)srvNameFromXMPPSDomain:(NSString *)xmppDomain; 
 
 @end
 

@@ -133,7 +133,7 @@ typedef enum XMPPBlockingQueryInfoType {
 {
 	dispatch_block_t block = ^{
 		
-		autoRetrieveBlockingListItems = flag;
+        self->autoRetrieveBlockingListItems = flag;
 	};
 	
 	if (dispatch_get_specific(moduleQueueTag))
@@ -164,7 +164,7 @@ typedef enum XMPPBlockingQueryInfoType {
 {
 	dispatch_block_t block = ^{
 		
-		autoClearBlockingListInfo = flag;
+        self->autoClearBlockingListInfo = flag;
 	};
 	
 	if (dispatch_get_specific(moduleQueueTag))
@@ -208,7 +208,7 @@ typedef enum XMPPBlockingQueryInfoType {
 	{
 		dispatch_async(moduleQueue, ^{ @autoreleasepool {
 			
-			[blockingDict removeAllObjects];
+            [self->blockingDict removeAllObjects];
 		}});
 	}
 }
