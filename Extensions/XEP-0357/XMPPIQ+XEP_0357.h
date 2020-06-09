@@ -56,6 +56,6 @@ extern NSString * __nonnull  const XMPPRegisterPushTokenXMLNS;
  */
 + (nonnull instancetype)disableNotificationsElementWithJID:(nonnull XMPPJID *)jid node:(nullable NSString *)node elementId:(nullable NSString*)elementId;
 
-+ (nonnull instancetype)registerPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid token:(nonnull NSString *)token elementId:(nullable NSString *)elementId;
++ (nonnull instancetype)registerPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid token:(nonnull NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString *)elementId;
 
 @end

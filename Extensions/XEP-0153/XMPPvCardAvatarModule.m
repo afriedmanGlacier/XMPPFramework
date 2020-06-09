@@ -164,7 +164,14 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
 	XMPPLogTrace();
-	[_xmppvCardTempModule fetchvCardTempForJID:[sender myJID] ignoreStorage:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+            //back to xmppQueue
+            [self performBlockAsync:^{
+                [_xmppvCardTempModule fetchvCardTempForJID:[sender myJID] ignoreStorage:YES];
+            }];
+        }
+    });
 }
 
 

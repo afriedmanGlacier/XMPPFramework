@@ -1451,9 +1451,16 @@ static NSInteger sortFieldValues(NSXMLElement *value1, NSXMLElement *value2, voi
 {	
 	if (autoFetchMyServerCapabilities)
 	{
-		XMPPJID *myJID = [xmppStream myJID];
-		XMPPJID *myServerJID = [XMPPJID jidWithUser:nil domain:[myJID domain] resource:nil];
-		[self fetchCapabilitiesForJID:myServerJID];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+                //back to xmppQueue
+                [self performBlockAsync:^{
+                    XMPPJID *myJID = [self->xmppStream myJID];
+                    XMPPJID *myServerJID = [XMPPJID jidWithUser:nil domain:[myJID domain] resource:nil];
+                    [self fetchCapabilitiesForJID:myServerJID];
+                }];
+            }
+        });
 	}
 }
 

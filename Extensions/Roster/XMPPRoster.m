@@ -786,7 +786,15 @@ enum XMPPRosterFlags
 	
 	if ([self autoFetchRoster])
 	{
-		[self fetchRoster];
+		// no need to fetch roster if doing things in background
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+                //back to xmppQueue
+                [self performBlockAsync:^{
+                    [self fetchRoster];
+                }];
+            }
+        });
 	}
 }
 

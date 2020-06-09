@@ -58,13 +58,13 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 /**
  * Send IQ to server with user/token
  */
-- (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token elementId:(nullable NSString*)elementId {
+- (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString*)elementId {
     __weak typeof(self) weakSelf = self;
     //__weak id weakMulticast = multicastDelegate;
     
     [self performBlockAsync:^{
         NSString *eid = [self fixElementId:elementId];
-        XMPPIQ *registerPushElement = [XMPPIQ registerPushElementWithJID:fromjid tojid:tojid token:token elementId:eid];
+        XMPPIQ *registerPushElement = [XMPPIQ registerPushElementWithJID:fromjid tojid:tojid token:token voiptoken:voiptoken elementId:eid];
         [self.tracker addElement:registerPushElement block:^(XMPPIQ *responseIq, id<XMPPTrackingInfo> info) {
             __typeof__(self) strongSelf = weakSelf;
             if (!strongSelf) { return; }

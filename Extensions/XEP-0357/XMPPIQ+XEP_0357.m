@@ -83,7 +83,7 @@ NSString *const XMPPRegisterPushTokenXMLNS = @"http://jabber.org/protocol/comman
         </command>
     </iq>
  */
-+ (instancetype)registerPushElementWithJID:(XMPPJID *)fromjid tojid:(NSString *)tojid token:(NSString *)token elementId:(NSString *)elementId
++ (instancetype)registerPushElementWithJID:(XMPPJID *)fromjid tojid:(NSString *)tojid token:(NSString *)token voiptoken:(NSString *)voiptoken elementId:(NSString *)elementId
 {
     if (!elementId) {
         elementId = [XMPPStream generateUUID];
@@ -98,6 +98,13 @@ NSString *const XMPPRegisterPushTokenXMLNS = @"http://jabber.org/protocol/comman
     [tokenField addAttributeWithName:@"var" stringValue:@"token"];
     [tokenField addChild:[NSXMLElement elementWithName:@"value" stringValue:token]];
     [dataForm addChild:tokenField];
+    
+    if (voiptoken != nil) {
+        NSXMLElement *voiptokenField = [NSXMLElement elementWithName:@"field"];
+        [voiptokenField addAttributeWithName:@"var" stringValue:@"voiptoken"];
+        [voiptokenField addChild:[NSXMLElement elementWithName:@"value" stringValue:voiptoken]];
+        [dataForm addChild:voiptokenField];
+    }
     
     NSXMLElement *idField = [NSXMLElement elementWithName:@"field"];
     [idField addAttributeWithName:@"var" stringValue:@"device-id"];

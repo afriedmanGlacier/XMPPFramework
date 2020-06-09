@@ -359,11 +359,19 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 #pragma mark XMPPStreamDelegate methods
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
-    OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
-    [self fetchDeviceIdsForJID:sender.myJID elementId:nil];
-    if (myBundle) {
-        [self publishBundle:myBundle elementId:nil];
-    }
+    // we only want to handle OMEMO bundles when actively in foreground
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+            //back to xmppQueue
+            [self performBlockAsync:^{
+                OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
+                [self fetchDeviceIdsForJID:sender.myJID elementId:nil];
+                if (myBundle) {
+                    [self publishBundle:myBundle elementId:nil];
+                }
+            }];
+        }
+    });
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message {
