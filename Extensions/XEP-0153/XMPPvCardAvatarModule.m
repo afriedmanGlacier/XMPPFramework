@@ -179,41 +179,58 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
 	XMPPLogTrace();
     
 	NSXMLElement *currentXElement = [presence elementForName:kXMPPvCardAvatarElement xmlns:kXMPPvCardAvatarNS];
-	
-	//If there is already a x element then remove it
-	if(currentXElement)
-	{
-	    NSUInteger currentXElementIndex = [[presence children] indexOfObject:currentXElement];
-	    
-	    if(currentXElementIndex != NSNotFound)
-	    {
-	        [presence removeChildAtIndex:currentXElementIndex];
-	    }
-	}
-	// add our photo info to the presence stanza
-	NSXMLElement *photoElement = nil;
-	NSXMLElement *xElement = [NSXMLElement elementWithName:kXMPPvCardAvatarElement xmlns:kXMPPvCardAvatarNS];
-
-	NSString *photoHash = [_moduleStorage photoHashForJID:[sender myJID] xmppStream:sender];
-
-    if (photoHash != nil)
-    {
-	    photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarPhotoElement stringValue:photoHash];
-	} else {
-	    photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarPhotoElement];
-	}
-
-	[xElement addChild:photoElement];
     
-    XMPPvCardTemp *vCardTemp = [_xmppvCardTempModule.xmppvCardTempModuleStorage vCardTempForJID:[sender myJID] xmppStream:sender];
-    if (vCardTemp != nil) {
-        if (vCardTemp.nickname != nil) {
-            NSXMLElement *displayElement = [NSXMLElement elementWithName:kXMPPvCardAvatarDisplayElement stringValue:vCardTemp.nickname];
-            [xElement addChild:displayElement];
+    BOOL nameupdate = NO;
+    NSXMLElement *displayElement = [currentXElement elementForName:@"displayname"];
+    NSString *displayname = nil;
+    if (displayElement != nil) {
+        displayname = [displayElement stringValue];
+    }
+    
+    //If there is already a x element then remove it
+    if(currentXElement)
+    {
+        // if display name only, send as is
+        if ([currentXElement elementForName:@"displayonly"] != nil) {
+            nameupdate = YES;
+        }
+        
+        NSUInteger currentXElementIndex = [[presence children] indexOfObject:currentXElement];
+        
+        if(currentXElementIndex != NSNotFound)
+        {
+            [presence removeChildAtIndex:currentXElementIndex];
+        }
+    }
+    // add our photo info to the presence stanza
+    NSXMLElement *photoElement = nil;
+    NSXMLElement *xElement = [NSXMLElement elementWithName:kXMPPvCardAvatarElement xmlns:kXMPPvCardAvatarNS];
+
+    NSString *photoHash = [_moduleStorage photoHashForJID:[sender myJID] xmppStream:sender];
+
+    if (photoHash != nil && !nameupdate)
+    {
+        photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarPhotoElement stringValue:photoHash];
+    } else {
+        photoElement = [NSXMLElement elementWithName:kXMPPvCardAvatarPhotoElement];
+    }
+
+    [xElement addChild:photoElement];
+    
+    if (nameupdate && displayname != nil) {
+        NSXMLElement *displayEl = [NSXMLElement elementWithName:kXMPPvCardAvatarDisplayElement stringValue:displayname];
+        [xElement addChild:displayEl];
+    } else {
+        XMPPvCardTemp *vCardTemp = [_xmppvCardTempModule.xmppvCardTempModuleStorage vCardTempForJID:[sender myJID] xmppStream:sender];
+        if (vCardTemp != nil) {
+            if (vCardTemp.nickname != nil) {
+                NSXMLElement *displayElement = [NSXMLElement elementWithName:kXMPPvCardAvatarDisplayElement stringValue:vCardTemp.nickname];
+                [xElement addChild:displayElement];
+            }
         }
     }
     
-	[presence addChild:xElement];
+    [presence addChild:xElement];
     
 	// Question: If photoElement is nil, should we be adding xElement?
 	

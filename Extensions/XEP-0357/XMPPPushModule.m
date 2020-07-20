@@ -177,6 +177,16 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     }];
 }
 
+- (void) unregisterPushForUserJID:(XMPPJID*)userJID
+                           server:(NSString*)serverJID
+                        elementId:(nullable NSString*)elementId {
+    [self performBlockAsync:^{
+        NSString *eid = [self fixElementId:elementId];
+        XMPPIQ *unregisterPushElement = [XMPPIQ unregisterPushElementWithJID:userJID tojid:serverJID elementId:eid];
+        [self->xmppStream sendElement:unregisterPushElement];
+    }];
+}
+
 #pragma mark Setup
 
 - (BOOL)activate:(XMPPStream *)aXmppStream

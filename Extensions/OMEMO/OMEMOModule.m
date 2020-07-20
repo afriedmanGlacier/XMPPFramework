@@ -19,6 +19,7 @@
 #import "XMPPLogging.h"
 #import "XMPPMessage+XEP_0280.h"
 #import "XMPPMessage+XEP_0313.h"
+#import "XMPPMessage+XEP_0333.h"
 #import "NSXMLElement+XEP_0297.h"
 #import "XMPPMessageCarbons.h"
 #import "XMPPMessageArchiveManagement.h"
@@ -245,6 +246,8 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             [expiresElement addAttributeWithName:@"seconds" stringValue:expiration];
             [message addChild:expiresElement];
         }
+        
+        [message addMarkableChatMarker];
         
         [xmppStream sendElement:message];
     }

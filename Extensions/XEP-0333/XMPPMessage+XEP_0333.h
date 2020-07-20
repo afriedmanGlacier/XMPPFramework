@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addMarkableChatMarker;
 - (void)addReceivedChatMarkerWithID:(NSString *)elementID;
 - (void)addDisplayedChatMarkerWithID:(NSString *)elementID;
+- (void)addDisplayedChatMarkerWithID:(NSString *)elementID sender:(NSString *)sender;
 - (void)addAcknowledgedChatMarkerWithID:(NSString *)elementID;
 
 - (XMPPMessage *)generateReceivedChatMarker;

@@ -76,6 +76,15 @@
     [self addChild:readDisplayedMarker];
 }
 
+- (void)addDisplayedChatMarkerWithID:(NSString *)elementID sender:(NSString *)sender
+{
+    NSXMLElement *readDisplayedMarker = [[NSXMLElement alloc] initWithName:DISPLAYED_NAME xmlns:XMLNS_CHAT_MARKERS];
+    [readDisplayedMarker addAttributeWithName:@"id" stringValue:elementID];
+    [readDisplayedMarker addAttributeWithName:@"sender" stringValue:sender];
+
+    [self addChild:readDisplayedMarker];
+}
+
 - (void)addAcknowledgedChatMarkerWithID:(NSString *)elementID
 {
     NSXMLElement *acknowledgedChatMarker = [[NSXMLElement alloc] initWithName:ACKNOWLEDGED_NAME xmlns:XMLNS_CHAT_MARKERS];

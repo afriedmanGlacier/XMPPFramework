@@ -122,4 +122,32 @@ NSString *const XMPPRegisterPushTokenXMLNS = @"http://jabber.org/protocol/comman
     return iq;
 }
 
++ (instancetype)unregisterPushElementWithJID:(XMPPJID *)fromjid tojid:(NSString *)tojid elementId:(NSString *)elementId
+{
+    if (!elementId) {
+        elementId = [XMPPStream generateUUID];
+    }
+    NSXMLElement *commandElement = [self elementWithName:@"command" xmlns:XMPPRegisterPushTokenXMLNS];
+    [commandElement addAttributeWithName:@"action" stringValue:@"execute"];
+    [commandElement addAttributeWithName:@"node" stringValue:@"unregister-push-apns"];
+    
+    NSXMLElement *dataForm = [self elementWithName:@"x" xmlns:@"jabber:x:data"];
+    [dataForm addAttributeWithName:@"type" stringValue:@"submit"];
+    
+    NSXMLElement *idField = [NSXMLElement elementWithName:@"field"];
+    [idField addAttributeWithName:@"var" stringValue:@"device-id"];
+    UIDevice *currentDevice = [UIDevice currentDevice];
+    NSString *deviceId = [[currentDevice identifierForVendor] UUIDString];
+    [idField addChild:[NSXMLElement elementWithName:@"value" stringValue:deviceId]];
+    [dataForm addChild:idField];
+    
+    [commandElement addChild:dataForm];
+    
+    XMPPIQ *iq = [self iqWithType:@"set" elementID:elementId child:commandElement];
+    [iq addAttributeWithName:@"from" stringValue:[fromjid full]];
+    [iq addAttributeWithName:@"to" stringValue:tojid];
+    
+    return iq;
+}
+
 @end

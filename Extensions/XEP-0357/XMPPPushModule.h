@@ -40,6 +40,10 @@ NS_ASSUME_NONNULL_BEGIN
                             node:(nullable NSString*)node
                        elementId:(nullable NSString*)elementId;
 
+- (void) unregisterPushForUserJID:(XMPPJID*)userJID
+                           server:(NSString*)serverJID
+                        elementId:(nullable NSString*)elementId;
+
 - (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString*)elementId;
 
 /** This will trigger the same logic as xmppStreamDidAuthenticate: */
