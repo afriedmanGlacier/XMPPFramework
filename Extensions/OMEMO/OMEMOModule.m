@@ -247,7 +247,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             [message addChild:expiresElement];
         }
         
-        [message addMarkableChatMarker];
+        [message addMarkableChatMarker]; //read receipts
         
         [xmppStream sendElement:message];
     }
