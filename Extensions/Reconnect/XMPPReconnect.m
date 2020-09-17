@@ -267,6 +267,11 @@ typedef SCNetworkConnectionFlags SCNetworkReachabilityFlags;
 #pragma mark XMPPStream Delegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (void)xmppStreamWillConnect:(XMPPStream *)sender
+{
+    [self setShouldReconnect:YES];
+}
+
 - (void)xmppStreamDidConnect:(XMPPStream *)sender
 {
 	// This method is executed on our moduleQueue.
