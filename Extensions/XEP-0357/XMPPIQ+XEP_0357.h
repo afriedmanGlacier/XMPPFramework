@@ -58,6 +58,6 @@ extern NSString * __nonnull  const XMPPRegisterPushTokenXMLNS;
 
 + (nonnull instancetype)registerPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid token:(nonnull NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString *)elementId;
 
-+ (nonnull instancetype)unregisterPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid elementId:(nullable NSString *)elementId
++ (nonnull instancetype)unregisterPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid elementId:(nullable NSString *)elementId;
 
 @end
