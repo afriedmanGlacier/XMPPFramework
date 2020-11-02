@@ -122,6 +122,51 @@ NSString *const XMPPRegisterPushTokenXMLNS = @"http://jabber.org/protocol/comman
     return iq;
 }
 
+//this should eventually go away. Added for migration from using push notifications to messages for call setup. 
++ (nonnull instancetype)registerPushElementWithJID:(nonnull XMPPJID *)fromjid tojid:(nonnull NSString *)tojid token:(nonnull NSString *)token voiptoken:(nullable NSString *)voiptoken migrated:(BOOL)migrated elementId:(nullable NSString *)elementId
+{
+    if (!elementId) {
+        elementId = [XMPPStream generateUUID];
+    }
+    NSXMLElement *commandElement = [self elementWithName:@"command" xmlns:XMPPRegisterPushTokenXMLNS];
+    [commandElement addAttributeWithName:@"action" stringValue:@"execute"];
+    [commandElement addAttributeWithName:@"node" stringValue:@"register-push-apns"];
+    
+    NSXMLElement *dataForm = [self elementWithName:@"x" xmlns:@"jabber:x:data"];
+    [dataForm addAttributeWithName:@"type" stringValue:@"submit"];
+    NSXMLElement *tokenField = [NSXMLElement elementWithName:@"field"];
+    [tokenField addAttributeWithName:@"var" stringValue:@"token"];
+    [tokenField addChild:[NSXMLElement elementWithName:@"value" stringValue:token]];
+    [dataForm addChild:tokenField];
+    
+    if (voiptoken != nil) {
+        NSXMLElement *voiptokenField = [NSXMLElement elementWithName:@"field"];
+        [voiptokenField addAttributeWithName:@"var" stringValue:@"voiptoken"];
+        [voiptokenField addChild:[NSXMLElement elementWithName:@"value" stringValue:voiptoken]];
+        [dataForm addChild:voiptokenField];
+    }
+    
+    NSXMLElement *migratedField = [NSXMLElement elementWithName:@"field"];
+    [migratedField addAttributeWithName:@"var" stringValue:@"migrated"];
+    [migratedField addChild:[NSXMLElement elementWithName:@"value" stringValue:@"true"]];
+    [dataForm addChild:migratedField];
+    
+    NSXMLElement *idField = [NSXMLElement elementWithName:@"field"];
+    [idField addAttributeWithName:@"var" stringValue:@"device-id"];
+    UIDevice *currentDevice = [UIDevice currentDevice];
+    NSString *deviceId = [[currentDevice identifierForVendor] UUIDString];
+    [idField addChild:[NSXMLElement elementWithName:@"value" stringValue:deviceId]];
+    [dataForm addChild:idField];
+    
+    [commandElement addChild:dataForm];
+    
+    XMPPIQ *iq = [self iqWithType:@"set" elementID:elementId child:commandElement];
+    [iq addAttributeWithName:@"from" stringValue:[fromjid full]];
+    [iq addAttributeWithName:@"to" stringValue:tojid];
+    
+    return iq;
+}
+
 + (instancetype)unregisterPushElementWithJID:(XMPPJID *)fromjid tojid:(NSString *)tojid elementId:(NSString *)elementId
 {
     if (!elementId) {

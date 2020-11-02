@@ -64,7 +64,8 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     
     [self performBlockAsync:^{
         NSString *eid = [self fixElementId:elementId];
-        XMPPIQ *registerPushElement = [XMPPIQ registerPushElementWithJID:fromjid tojid:tojid token:token voiptoken:voiptoken elementId:eid];
+        //XMPPIQ *registerPushElement = [XMPPIQ registerPushElementWithJID:fromjid tojid:tojid token:token voiptoken:voiptoken elementId:eid];
+        XMPPIQ *registerPushElement = [XMPPIQ registerPushElementWithJID:fromjid tojid:tojid token:token voiptoken:voiptoken migrated:YES elementId:eid]; //temporary
         [self.tracker addElement:registerPushElement block:^(XMPPIQ *responseIq, id<XMPPTrackingInfo> info) {
             __typeof__(self) strongSelf = weakSelf;
             if (!strongSelf) { return; }
