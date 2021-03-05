@@ -361,7 +361,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 
 #pragma mark XMPPStreamDelegate methods
 
-- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
+- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions") {
     // we only want to handle OMEMO bundles when actively in foreground
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {

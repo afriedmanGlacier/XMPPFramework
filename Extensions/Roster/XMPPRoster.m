@@ -778,7 +778,7 @@ enum XMPPRosterFlags
 #pragma mark XMPPStream Delegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
+- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions")
 {
 	// This method is invoked on the moduleQueue.
 	

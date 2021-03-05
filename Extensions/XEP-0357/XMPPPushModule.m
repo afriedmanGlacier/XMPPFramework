@@ -58,7 +58,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 /**
  * Send IQ to server with user/token
  */
-- (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString*)elementId {
+- (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString*)elementId NS_EXTENSION_UNAVAILABLE("not available in extensions") {
     __weak typeof(self) weakSelf = self;
     //__weak id weakMulticast = multicastDelegate;
     
@@ -254,7 +254,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     }];
 }
 
-- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
+- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions")
 {
     [self refresh];
 }
