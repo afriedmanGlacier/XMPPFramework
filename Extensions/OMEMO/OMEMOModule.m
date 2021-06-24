@@ -17,6 +17,7 @@
 #import "XMPPMessage+OMEMO.h"
 #import "XMPPIDTracker.h"
 #import "XMPPLogging.h"
+#import "XMPPMessage+XEP0045.h"
 #import "XMPPMessage+XEP_0280.h"
 #import "XMPPMessage+XEP_0313.h"
 #import "XMPPMessage+XEP_0333.h"
@@ -209,7 +210,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     __weak typeof(self) weakSelf = self;
     __weak id weakMulticast = multicastDelegate;
     [self performBlock:^{
-        [self fetchDeviceIdsForJID:self.xmppStream.myJID elementId:nil completion:^(XMPPIQ *responseIq, id<XMPPTrackingInfo> info) {
+        [self fetchDeviceIdsForJID:self.xmppStream.myJID elementId:elementId completion:^(XMPPIQ *responseIq, id<XMPPTrackingInfo> info) {
             __typeof__(self) strongSelf = weakSelf;
             if (!strongSelf) { return; }
             if (!responseIq || [responseIq isErrorIQ]) {
@@ -404,7 +405,11 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             forJID = mam.to;
         }
         if (!forJID) {
-            return;
+            if (mam.isGroupChatMessage) { 
+                forJID = mam.from;
+            } else {
+                return;
+            }
         }
         NSDate *delayed = mamResult.forwardedStanzaDelayedDeliveryDate;
         [self receiveMessage:mam forJID:forJID isIncoming:isIncoming delayed:delayed originalMessage:message];
