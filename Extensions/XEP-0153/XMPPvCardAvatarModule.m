@@ -168,7 +168,7 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
         if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
             //back to xmppQueue
             [self performBlockAsync:^{
-                [_xmppvCardTempModule fetchvCardTempForJID:[sender myJID] ignoreStorage:YES];
+                [_xmppvCardTempModule fetchvCardTempForJID:[sender myJID] ignoreStorage:NO];
             }];
         }
     });
@@ -268,7 +268,7 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
         && !([photoHash length] == 0 && [savedPhotoHash length] == 0)) {
 		//[_xmppvCardTempModule fetchvCardTempForJID:jid ignoreStorage:YES];
         if ([jid.domain hasPrefix:@"conference"]) {
-            [_xmppvCardTempModule fetchvCardTempForJID:jid ignoreStorage:YES];
+            //[_xmppvCardTempModule fetchvCardTempForJID:jid ignoreStorage:YES];
         } else {
             [_xmppvCardTempModule forceFetchvCardTempForJID:jid];
         }

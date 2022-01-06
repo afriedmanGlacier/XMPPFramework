@@ -2,6 +2,7 @@
 #import "XMPPRoom.h"
 #import "XMPPIDTracker.h"
 #import "XMPPMessage+XEP0045.h"
+#import "XMPPMessage+XEP_0333.h"
 #import "XMPPLogging.h"
 
 
@@ -1342,6 +1343,9 @@ enum XMPPRoomState
 	else
 	{
 		// Todo... Handle other types of messages.
+        if (message.hasDisplayedChatMarker) { 
+            [xmppRoomStorage handleIncomingMessage:message room:self];
+        }
 	}
 }
 
