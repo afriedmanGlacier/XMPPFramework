@@ -63,6 +63,9 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 **/
 - (instancetype)initP2PFrom:(XMPPJID *)myJID;
 
+//IOSM#23, IOSM#24
+- (void)predealloc;
+
 /**
  * XMPPStream uses a multicast delegate.
  * This allows one to add multiple delegates to a single XMPPStream instance,

@@ -248,6 +248,37 @@ enum XMPPStreamConfig
 	return self;
 }
 
+//IOSM#23, IOSM#24
+- (void)predealloc
+{
+    [asyncSocket setDelegate:nil delegateQueue:NULL];
+    [asyncSocket disconnect];
+    
+    dispatch_block_t block = ^{
+        [self->idTracker removeAllIDs];
+    };
+    if (dispatch_get_specific(xmppQueueTag))
+        block();
+    else
+        dispatch_sync(xmppQueue, block);
+    
+    [parser setDelegate:nil delegateQueue:NULL];
+    
+    if (keepAliveTimer)
+    {
+        dispatch_source_cancel(keepAliveTimer);
+    }
+    
+    [multicastDelegate removeAllDelegates];
+    myJID_setByClient = nil;
+    myJID_setByServer = nil;
+    remoteJID = nil;
+    
+    idTracker = nil;
+    multicastDelegate = nil;
+    asyncSocket = nil;
+}
+
 /**
  * Standard deallocation method.
  * Every object variable declared in the header file should be released here.
@@ -268,17 +299,24 @@ enum XMPPStreamConfig
 	dispatch_release(didReceiveIqQueue);
 	#endif
 	
-	[asyncSocket setDelegate:nil delegateQueue:NULL];
-	[asyncSocket disconnect];
+    //IOSM#23, IOSM#24 set to nil in predealloc
+    if (asyncSocket != nil) {
+        [asyncSocket setDelegate:nil delegateQueue:NULL];
+        [asyncSocket disconnect];
+    }
 	
-	[parser setDelegate:nil delegateQueue:NULL];
+    if (parser != nil) {
+        [parser setDelegate:nil delegateQueue:NULL];
+    }
 	
 	if (keepAliveTimer)
 	{
 		dispatch_source_cancel(keepAliveTimer);
 	}
     
-    [idTracker removeAllIDs];
+    if (idTracker != nil) {
+        [idTracker removeAllIDs];
+    }
     
 	for (XMPPElementReceipt *receipt in receipts)
 	{

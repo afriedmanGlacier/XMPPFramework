@@ -215,7 +215,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             if (!strongSelf) { return; }
             if (!responseIq || [responseIq isErrorIQ]) {
                 // timeout
-                XMPPLogWarn(@"fetchDeviceIdsForJID error: %@ %@", info.element, responseIq);
+                XMPPLogWarn(@"fetchDeviceIdsForJID in removeDeviceIds error: %@ %@", info.element, responseIq);
                 [weakMulticast omemo:strongSelf failedToRemoveDeviceIds:deviceIds errorIq:responseIq elementId:elementId];
                 return;
             }
@@ -363,6 +363,9 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 #pragma mark XMPPStreamDelegate methods
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions") {
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+        return;
+    }
     // we only want to handle OMEMO bundles when actively in foreground
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {

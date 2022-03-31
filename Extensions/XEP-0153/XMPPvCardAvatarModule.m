@@ -163,6 +163,9 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
 
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions") {
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+        return;
+    }
 	XMPPLogTrace();
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {

@@ -780,6 +780,9 @@ enum XMPPRosterFlags
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions")
 {
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+        return;
+    }
 	// This method is invoked on the moduleQueue.
 	
 	XMPPLogTrace();

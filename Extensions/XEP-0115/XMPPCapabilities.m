@@ -1448,7 +1448,11 @@ static NSInteger sortFieldValues(NSXMLElement *value1, NSXMLElement *value2, voi
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions")
-{	
+{
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+        return;
+    }
+    
 	if (autoFetchMyServerCapabilities)
 	{
         dispatch_async(dispatch_get_main_queue(), ^{
