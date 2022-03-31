@@ -63,7 +63,9 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 **/
 - (instancetype)initP2PFrom:(XMPPJID *)myJID;
 
-//IOSM#23, IOSM#24
+/**
+  Dealloc isn't getting called because references are being held. This takes care of those references.
+ */
 - (void)predealloc;
 
 /**

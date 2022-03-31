@@ -248,7 +248,6 @@ enum XMPPStreamConfig
 	return self;
 }
 
-//IOSM#23, IOSM#24
 - (void)predealloc
 {
     [asyncSocket setDelegate:nil delegateQueue:NULL];
@@ -299,7 +298,7 @@ enum XMPPStreamConfig
 	dispatch_release(didReceiveIqQueue);
 	#endif
 	
-    //IOSM#23, IOSM#24 set to nil in predealloc
+    //set to nil in predealloc
     if (asyncSocket != nil) {
         [asyncSocket setDelegate:nil delegateQueue:NULL];
         [asyncSocket disconnect];

@@ -363,7 +363,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 #pragma mark XMPPStreamDelegate methods
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions") {
-    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) {
         return;
     }
     // we only want to handle OMEMO bundles when actively in foreground

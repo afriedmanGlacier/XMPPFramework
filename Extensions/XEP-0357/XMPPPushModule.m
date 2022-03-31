@@ -59,7 +59,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
  * Send IQ to server with user/token
  */
 - (void) handleDeviceTokenWithJID:(XMPPJID*)fromjid tojid:(NSString *)tojid token:(NSString *)token voiptoken:(nullable NSString *)voiptoken elementId:(nullable NSString*)elementId NS_EXTENSION_UNAVAILABLE("not available in extensions") {
-    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) {
         return;
     }
     __weak typeof(self) weakSelf = self;
@@ -259,7 +259,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender NS_EXTENSION_UNAVAILABLE("not available in extensions")
 {
-    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) { //IOSM#23, IOSM#24
+    if ([[[NSBundle mainBundle] bundlePath] hasSuffix:@".appex"]) {
         return;
     }
     
