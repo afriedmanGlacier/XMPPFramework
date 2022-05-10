@@ -4384,7 +4384,7 @@ enum XMPPStreamConfig
 		// The connection must be secured immediately (just like with HTTPS)
 		[self startTLS];
 	}
-    else if (port == 5223) //xmpps
+    else if (port == 5223 || port == 443) //xmpps
     {
         [self startTLS];
     }
