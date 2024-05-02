@@ -28,3 +28,5 @@
 // 
 
 #import "NSXMLElement+XMPP.h"
+
+#import "XMPPvCardTemp.h"

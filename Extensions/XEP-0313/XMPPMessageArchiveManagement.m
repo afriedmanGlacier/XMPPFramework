@@ -91,7 +91,7 @@ static NSString *const QueryIdAttributeName = @"queryid";
 		[iq addChild:queryElement];
 
 		[queryElement addChild:formElement];
-        [queryElement addChild:[NSXMLElement elementWithName:@"flip-page"]];
+        //[queryElement addChild:[NSXMLElement elementWithName:@"flip-page"]];
 
 		if (resultSet) {
 			[queryElement addChild:resultSet];

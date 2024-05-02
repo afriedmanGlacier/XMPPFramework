@@ -377,6 +377,13 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
                     [self publishBundle:myBundle elementId:nil];
                 }
             }];
+            /*dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), self->moduleQueue, ^{
+                OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
+                [self fetchDeviceIdsForJID:sender.myJID elementId:nil];
+                if (myBundle) {
+                    [self publishBundle:myBundle elementId:nil];
+                }
+            });*/
         }
     });
 }
@@ -415,6 +422,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             }
         }
         NSDate *delayed = mamResult.forwardedStanzaDelayedDeliveryDate;
+        //XMPPLogWarn(@"***** MAM with date: %@ and timestamp %f", delayed, NSDate.timeIntervalSinceReferenceDate);
         [self receiveMessage:mam forJID:forJID isIncoming:isIncoming delayed:delayed originalMessage:message];
     } else {
         [self receiveMessage:message forJID:message.from isIncoming:YES delayed:nil originalMessage:message];
