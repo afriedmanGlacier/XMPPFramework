@@ -646,7 +646,8 @@ static void XMPPReconnectReachabilityCallback(SCNetworkReachabilityRef target, S
                         else
                         {
                             //[xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:nil];
-                            [self->xmppStream connectWithTimeout:(NSTimeInterval)10 error:nil];
+                            //set from 10 to 5 on 092624
+                            [self->xmppStream connectWithTimeout:(NSTimeInterval)5 error:nil];
                         }
 					}
 					else if ([self shouldRestartReconnect])

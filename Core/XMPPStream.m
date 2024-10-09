@@ -46,7 +46,7 @@
 #define TAG_XMPP_WRITE_RECEIPT      203
 
 // Define the timeouts (in seconds) for SRV
-#define TIMEOUT_SRV_RESOLUTION 30.0
+#define TIMEOUT_SRV_RESOLUTION 5.0 //30.0
 
 NSString *const XMPPStreamErrorDomain = @"XMPPStreamErrorDomain";
 NSString *const XMPPStreamDidChangeMyJIDNotification = @"XMPPStreamDidChangeMyJID";

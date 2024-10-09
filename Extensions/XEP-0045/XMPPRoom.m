@@ -1389,8 +1389,9 @@ enum XMPPRoomState
 	state = kXMPPRoomStateNone;
 	[responseTracker removeAllIDs];
 	
-	[xmppRoomStorage handleDidLeaveRoom:self];
-	[multicastDelegate xmppRoomDidLeave:self];
+    //handled elsewhere
+	//[xmppRoomStorage handleDidLeaveRoom:self];
+	//[multicastDelegate xmppRoomDidLeave:self];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

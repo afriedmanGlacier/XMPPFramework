@@ -111,9 +111,11 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
                     elementId:(nullable NSString*)elementId {
     NSParameterAssert(jid != nil);
     if (!jid) { return; }
-    __block BOOL isOurJID = [self.xmppStream.myJID isEqualToJID:jid options:XMPPJIDCompareBare];
+    //NSLog(@"fetchDeviceIdsForJID %@", jid.bare);
+    //__block BOOL isOurJID = [self.xmppStream.myJID isEqualToJID:jid options:XMPPJIDCompareBare];
     [self fetchDeviceIdsForJID:jid elementId:elementId completion:^(XMPPIQ *responseIq, id<XMPPTrackingInfo> info) {
         // If we get an error response and this is our jid then we should process as if it's an empty device list.
+        BOOL isOurJID = [self->xmppStream.myJID isEqualToJID:jid options:XMPPJIDCompareBare];
         if ((!responseIq || [responseIq isErrorIQ]) && !isOurJID) {
             // timeout
             XMPPLogWarn(@"fetchDeviceIdsForJID error: %@ %@", info.element, responseIq);
@@ -188,7 +190,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             __typeof__(self) strongSelf = weakSelf;
             if (!strongSelf) { return; }
             if (!responseIq || [responseIq isErrorIQ]) {
-                // timeout
+                // timeout 
                 XMPPLogWarn(@"fetchBundleForDeviceId error: %@ %@", iq, responseIq);
                 [weakMulticast omemo:strongSelf failedToFetchBundleForDeviceId:deviceId fromJID:jid errorIq:responseIq outgoingIq:iq];
                 return;
@@ -312,6 +314,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
         }
         if (!omemo) { return; }
     }
+    
     uint32_t deviceId = [omemo omemo_senderDeviceId];
     NSArray<OMEMOKeyData*>* keyData = [omemo omemo_keyData];
     NSData *iv = [omemo omemo_iv];
