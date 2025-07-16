@@ -106,6 +106,49 @@ static NSString *const QueryIdAttributeName = @"queryid";
 	}];
 }
 
+- (void)retrieveLatestMessageArchiveAt:(XMPPJID *)archiveJID resultSet:(XMPPResultSet *)resultSet {
+    NSXMLElement *formElement = [NSXMLElement elementWithName:@"x" xmlns:@"jabber:x:data"];
+    [formElement addAttributeWithName:@"type" stringValue:@"submit"];
+    [formElement addChild:[XMPPMessageArchiveManagement fieldWithVar:@"FORM_TYPE" type:@"hidden" andValue:XMLNS_XMPP_MAM]];
+    
+    NSXMLElement *setElement = [NSXMLElement elementWithName:@"set" xmlns:@"http://jabber.org/protocol/rsm"];
+    NSXMLElement *maxElement = [NSXMLElement elementWithName:@"max" numberValue:@1];
+    NSXMLElement *beforeElement = [NSXMLElement elementWithName:@"before"];
+    [setElement addChild:maxElement];
+    [setElement addChild:beforeElement];
+    
+    [self performBlockAsync:^{
+        XMPPIQ *iq = [XMPPIQ iqWithType:@"set"];
+        [iq addAttributeWithName:@"id" stringValue:[XMPPStream generateUUID]];
+        
+        if (archiveJID) {
+            [iq addAttributeWithName:@"to" stringValue:[archiveJID full]];
+        }
+
+        NSString *queryId = [XMPPStream generateUUID];
+        [self->_outstandingQueryIds addObject:queryId];
+        
+        NSXMLElement *queryElement = [NSXMLElement elementWithName:@"query" xmlns:XMLNS_XMPP_MAM];
+        [queryElement addAttributeWithName:QueryIdAttributeName stringValue:queryId];
+        [iq addChild:queryElement];
+
+        [queryElement addChild:formElement];
+        [queryElement addChild:setElement];
+        //[queryElement addChild:[NSXMLElement elementWithName:@"flip-page"]];
+
+        if (resultSet) {
+            [queryElement addChild:resultSet];
+        }
+        
+        [self.xmppIDTracker addElement:iq
+                           target:self
+                         selector:@selector(handleMessageArchiveIQ:withInfo:)
+                          timeout:60];
+
+        [self->xmppStream sendElement:iq];
+    }];
+}
+
 - (void)handleMessageArchiveIQ:(XMPPIQ *)iq withInfo:(XMPPBasicTrackingInfo *)trackerInfo {
 	
 	if ([[iq type] isEqualToString:@"result"]) {

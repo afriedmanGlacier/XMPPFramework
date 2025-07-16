@@ -704,6 +704,8 @@ enum XMPPRosterFlags
             [query addAttributeWithName:@"ver" stringValue:version];
 		
         XMPPIQ *iq = [XMPPIQ iqWithType:@"get" elementID:[self->xmppStream generateUUID]];
+        //[iq addAttributeWithName:@"to" stringValue:self->xmppStream.myJID.domain];
+        [iq addAttributeWithName:@"to" stringValue:self->xmppStream.myJID.bare];
 		[iq addChild:query];
         
         [self->xmppIDTracker addElement:iq
