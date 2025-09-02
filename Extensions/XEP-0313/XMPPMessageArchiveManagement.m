@@ -106,7 +106,9 @@ static NSString *const QueryIdAttributeName = @"queryid";
 	}];
 }
 
-- (void)retrieveLatestMessageArchiveAt:(XMPPJID *)archiveJID resultSet:(XMPPResultSet *)resultSet {
+- (void)retrieveMyLatestMessageArchive {
+    XMPPJID *archiveJID = xmppStream.myJID.bareJID;
+    
     NSXMLElement *formElement = [NSXMLElement elementWithName:@"x" xmlns:@"jabber:x:data"];
     [formElement addAttributeWithName:@"type" stringValue:@"submit"];
     [formElement addChild:[XMPPMessageArchiveManagement fieldWithVar:@"FORM_TYPE" type:@"hidden" andValue:XMLNS_XMPP_MAM]];
@@ -136,9 +138,9 @@ static NSString *const QueryIdAttributeName = @"queryid";
         [queryElement addChild:setElement];
         //[queryElement addChild:[NSXMLElement elementWithName:@"flip-page"]];
 
-        if (resultSet) {
-            [queryElement addChild:resultSet];
-        }
+        //if (resultSet) {
+        //    [queryElement addChild:resultSet];
+        //}
         
         [self.xmppIDTracker addElement:iq
                            target:self
