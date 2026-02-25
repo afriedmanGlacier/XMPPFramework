@@ -558,6 +558,9 @@
 		
         XMPPLogVerbose(@"%@: processResumed: lastHandledByServer(%u)", THIS_FILE, self->lastHandledByServer);
 		
+        // Mark stream management enabled on the stream when resumption succeeds.
+        self->xmppStream.streamMgmtEnabled = YES;
+
         self->isStarted = YES;
         self->didResume = YES;
 		

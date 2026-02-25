@@ -4791,7 +4791,7 @@ enum XMPPStreamConfig
 		}
 		else if ([customElementNames countForObject:elementName])
 		{
-            if ([elementName isEqualToString:@"enabled"]) {
+            if ([elementName isEqualToString:@"enabled"] || [elementName isEqualToString:@"resumed"]) {
                 streamMgmtEnabled = YES;
             }
             
