@@ -104,7 +104,12 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
             NSMutableDictionary *options = [NSMutableDictionary dictionary];
             //[options setObject:token forKey:@"token"];
             [options setObject:secret forKey:@"secret"];
-            
+
+            // Glacier: register the push-encryption public key alongside the push secret.
+            if (strongSelf.extraPublishOptions.count) {
+                [options addEntriesFromDictionary:strongSelf.extraPublishOptions];
+            }
+
             //[options setObject:tojid forKey:@"endpoint"];
             XMPPPushOptions *pushOptions = [[XMPPPushOptions alloc] initWithServerJID:serverjid node:node formOptions:options];
             

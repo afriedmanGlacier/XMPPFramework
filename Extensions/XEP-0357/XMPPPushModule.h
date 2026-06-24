@@ -25,7 +25,14 @@ typedef NS_ENUM(NSUInteger, XMPPPushStatus) {
 NS_ASSUME_NONNULL_BEGIN
 @interface XMPPPushModule : XMPPModule
 
-/** 
+/**
+ * Extra publish-options fields merged into the XEP-0357 enable IQ's XData form. Used by
+ * Glacier to register the push-encryption public key (push-encrypt-alg/-pubkey/-kid).
+ * Set before push registration; re-set and refresh to rotate.
+ */
+@property (nonatomic, copy, nullable) NSDictionary<NSString*,NSString*> *extraPublishOptions;
+
+/**
  * This value only reflects local in-memory status and will not check the server. It is reset to XMPPPushStatusUnknown after
  * re-authentication because some servers clear this value on new streams.
  */
