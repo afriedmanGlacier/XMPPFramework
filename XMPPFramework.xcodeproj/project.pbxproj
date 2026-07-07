@@ -49,6 +49,12 @@
 		0D44BB531E537105000930E0 /* XMPPSCRAMSHA1Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44BB421E537105000930E0 /* XMPPSCRAMSHA1Authentication.m */; };
 		0D44BB541E537105000930E0 /* XMPPXOAuth2Google.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D44BB441E537105000930E0 /* XMPPXOAuth2Google.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0D44BB551E537105000930E0 /* XMPPXOAuth2Google.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44BB451E537105000930E0 /* XMPPXOAuth2Google.m */; };
+		AF0A2B0100000000000000B1 /* XMPPXOAuth2.h in Headers */ = {isa = PBXBuildFile; fileRef = AF0A2B0100000000000000A1 /* XMPPXOAuth2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AF0A2B0100000000000000B2 /* XMPPXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0A2B0100000000000000A2 /* XMPPXOAuth2.m */; };
+		AF0A2B0100000000000000B3 /* XMPPXOAuth2.h in Headers */ = {isa = PBXBuildFile; fileRef = AF0A2B0100000000000000A1 /* XMPPXOAuth2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AF0A2B0100000000000000B4 /* XMPPXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0A2B0100000000000000A2 /* XMPPXOAuth2.m */; };
+		AF0A2B0100000000000000B5 /* XMPPXOAuth2.h in Headers */ = {isa = PBXBuildFile; fileRef = AF0A2B0100000000000000A1 /* XMPPXOAuth2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AF0A2B0100000000000000B6 /* XMPPXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0A2B0100000000000000A2 /* XMPPXOAuth2.m */; };
 		0D44BB561E537105000930E0 /* XMPPCustomBinding.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D44BB461E537105000930E0 /* XMPPCustomBinding.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0D44BB571E537105000930E0 /* XMPPSASLAuthentication.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D44BB471E537105000930E0 /* XMPPSASLAuthentication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0D44BB671E537110000930E0 /* DDList.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D44BB591E537110000930E0 /* DDList.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1496,6 +1502,8 @@
 		0D44BB421E537105000930E0 /* XMPPSCRAMSHA1Authentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPSCRAMSHA1Authentication.m; sourceTree = "<group>"; };
 		0D44BB441E537105000930E0 /* XMPPXOAuth2Google.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPXOAuth2Google.h; sourceTree = "<group>"; };
 		0D44BB451E537105000930E0 /* XMPPXOAuth2Google.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPXOAuth2Google.m; sourceTree = "<group>"; };
+		AF0A2B0100000000000000A1 /* XMPPXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPXOAuth2.h; sourceTree = "<group>"; };
+		AF0A2B0100000000000000A2 /* XMPPXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPXOAuth2.m; sourceTree = "<group>"; };
 		0D44BB461E537105000930E0 /* XMPPCustomBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPCustomBinding.h; sourceTree = "<group>"; };
 		0D44BB471E537105000930E0 /* XMPPSASLAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPSASLAuthentication.h; sourceTree = "<group>"; };
 		0D44BB591E537110000930E0 /* DDList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDList.h; sourceTree = "<group>"; };
@@ -1987,6 +1995,7 @@
 				0D44BB3D1E537105000930E0 /* Plain */,
 				0D44BB401E537105000930E0 /* SCRAM-SHA-1 */,
 				0D44BB431E537105000930E0 /* X-OAuth2-Google */,
+				AF0A2B0100000000000000A0 /* X-OAuth2 */,
 				0D44BB461E537105000930E0 /* XMPPCustomBinding.h */,
 				0D44BB471E537105000930E0 /* XMPPSASLAuthentication.h */,
 			);
@@ -2054,6 +2063,15 @@
 				0D44BB451E537105000930E0 /* XMPPXOAuth2Google.m */,
 			);
 			path = "X-OAuth2-Google";
+			sourceTree = "<group>";
+		};
+		AF0A2B0100000000000000A0 /* X-OAuth2 */ = {
+			isa = PBXGroup;
+			children = (
+				AF0A2B0100000000000000A1 /* XMPPXOAuth2.h */,
+				AF0A2B0100000000000000A2 /* XMPPXOAuth2.m */,
+			);
+			path = "X-OAuth2";
 			sourceTree = "<group>";
 		};
 		0D44BB581E537110000930E0 /* Utilities */ = {
@@ -3175,6 +3193,7 @@
 				0D44BB1B1E5370ED000930E0 /* XMPPModule.h in Headers */,
 				0D44BB731E537110000930E0 /* XMPPTimer.h in Headers */,
 				0D44BB541E537105000930E0 /* XMPPXOAuth2Google.h in Headers */,
+				AF0A2B0100000000000000B1 /* XMPPXOAuth2.h in Headers */,
 				0D44BB2C1E5370FC000930E0 /* NSNumber+XMPP.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3373,6 +3392,7 @@
 				D9DCD52B1E6256D90010D1C7 /* XMPPModule.h in Headers */,
 				D9DCD52C1E6256D90010D1C7 /* XMPPTimer.h in Headers */,
 				D9DCD52D1E6256D90010D1C7 /* XMPPXOAuth2Google.h in Headers */,
+				AF0A2B0100000000000000B3 /* XMPPXOAuth2.h in Headers */,
 				D9DCD52E1E6256D90010D1C7 /* NSNumber+XMPP.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3547,6 +3567,7 @@
 				D9DCD68E1E6258CF0010D1C7 /* XMPPModule.h in Headers */,
 				D9DCD68F1E6258CF0010D1C7 /* XMPPTimer.h in Headers */,
 				D9DCD6901E6258CF0010D1C7 /* XMPPXOAuth2Google.h in Headers */,
+				AF0A2B0100000000000000B5 /* XMPPXOAuth2.h in Headers */,
 				D9DCD6911E6258CF0010D1C7 /* NSNumber+XMPP.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4065,6 +4086,7 @@
 				D9DCD24C1E6250930010D1C7 /* XMPPBandwidthMonitor.m in Sources */,
 				D9DCD3111E6250930010D1C7 /* NSXMLElement+XEP_0203.m in Sources */,
 				0D44BB551E537105000930E0 /* XMPPXOAuth2Google.m in Sources */,
+				AF0A2B0100000000000000B2 /* XMPPXOAuth2.m in Sources */,
 				D9DCD2EB1E6250930010D1C7 /* XMPPMessageArchiving.xcdatamodeld in Sources */,
 				D9DCD2A51E6250930010D1C7 /* XMPPMessage+XEP0045.m in Sources */,
 				D9DCD2DF1E6250930010D1C7 /* XMPPTransports.m in Sources */,
@@ -4284,6 +4306,7 @@
 				D9DCD4321E6256D90010D1C7 /* XMPPBandwidthMonitor.m in Sources */,
 				D9DCD4331E6256D90010D1C7 /* NSXMLElement+XEP_0203.m in Sources */,
 				D9DCD4341E6256D90010D1C7 /* XMPPXOAuth2Google.m in Sources */,
+				AF0A2B0100000000000000B4 /* XMPPXOAuth2.m in Sources */,
 				D9DCD4351E6256D90010D1C7 /* XMPPMessageArchiving.xcdatamodeld in Sources */,
 				D9DCD4361E6256D90010D1C7 /* XMPPMessage+XEP0045.m in Sources */,
 				D9DCD4371E6256D90010D1C7 /* XMPPTransports.m in Sources */,
@@ -4449,6 +4472,7 @@
 				D9DCD5951E6258CF0010D1C7 /* XMPPBandwidthMonitor.m in Sources */,
 				D9DCD5961E6258CF0010D1C7 /* NSXMLElement+XEP_0203.m in Sources */,
 				D9DCD5971E6258CF0010D1C7 /* XMPPXOAuth2Google.m in Sources */,
+				AF0A2B0100000000000000B6 /* XMPPXOAuth2.m in Sources */,
 				D9DCD5981E6258CF0010D1C7 /* XMPPMessageArchiving.xcdatamodeld in Sources */,
 				D9DCD5991E6258CF0010D1C7 /* XMPPMessage+XEP0045.m in Sources */,
 				D9DCD59A1E6258CF0010D1C7 /* XMPPTransports.m in Sources */,
