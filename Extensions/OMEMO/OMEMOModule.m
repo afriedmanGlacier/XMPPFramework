@@ -470,24 +470,45 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
         return;
     }
     fromJID = [fromJID bareJID];
-    // This may temporarily remove your own deviceId until we can update (below)
-    [self.omemoStorage storeDeviceIds:deviceIds forJID:fromJID];
-    
-    // Check if your device is contained in the update
-    if ([fromJID isEqualToJID:xmppStream.myJID options:XMPPJIDCompareBare]) {
-        OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
-        if (!myBundle) {
-            return;
-        }
-        if([deviceIds containsObject:@(myBundle.deviceId)]) {
-            return;
-        }
-        // Republish deviceIds with your deviceId
-        NSArray *appended = [deviceIds arrayByAddingObject:@(myBundle.deviceId)];
-        [self.omemoStorage storeDeviceIds:appended forJID:fromJID];
-        [self publishDeviceIds:appended elementId:[[NSUUID UUID] UUIDString]];
+
+    if (![fromJID isEqualToJID:xmppStream.myJID options:XMPPJIDCompareBare]) {
+        [self.omemoStorage storeDeviceIds:deviceIds forJID:fromJID];
+        return;
     }
 
+    // This is our own device list. Resolve our device id first: -myDeviceId is a cheap
+    // read, whereas -fetchMyBundle can top up 100 prekeys inside a database write and
+    // returns nil on any failure. Whether our own id survives must not depend on that.
+    uint32_t myDeviceId = 0;
+    if ([self.omemoStorage respondsToSelector:@selector(myDeviceId)]) {
+        myDeviceId = [self.omemoStorage myDeviceId];
+    }
+    if (myDeviceId == 0) {
+        OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
+        myDeviceId = myBundle ? myBundle.deviceId : 0;
+    }
+
+    if (myDeviceId == 0) {
+        // We can't tell what our device id is, so we can't tell whether the server's list
+        // is missing it. Storing the list as-is would drop our own device locally too, and
+        // the old code then returned without republishing -- leaving both sides holding a
+        // list that omits us, with nothing scheduled to repair it. Senders would encrypt
+        // only to the other ids and every incoming message would fail to decrypt. Leave
+        // the local list untouched and let the next device-list update retry.
+        XMPPLogWarn(@"processIncomingDeviceIds: own device id unavailable, keeping existing device list for %@", fromJID);
+        return;
+    }
+
+    if ([deviceIds containsObject:@(myDeviceId)]) {
+        [self.omemoStorage storeDeviceIds:deviceIds forJID:fromJID];
+        return;
+    }
+
+    // Our device is missing from the server's list. Store the union rather than the
+    // server's list, so a failed publish can't lose our id locally either, then republish.
+    NSArray<NSNumber *> *appended = [deviceIds arrayByAddingObject:@(myDeviceId)];
+    [self.omemoStorage storeDeviceIds:appended forJID:fromJID];
+    [self publishDeviceIds:appended elementId:[[NSUUID UUID] UUIDString]];
 }
 
 @end

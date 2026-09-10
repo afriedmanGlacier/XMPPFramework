@@ -261,5 +261,13 @@ originalMessage:(XMPPMessage*)originalMessage;
 /** Return YES if SignalProtocol session has been established and is valid */
 - (BOOL) isSessionValid:(XMPPJID*)jid deviceId:(uint32_t)deviceId;
 
+@optional
+
+/** This device's OMEMO device id (its SignalProtocol registration id), or 0 if no identity
+ *  exists yet. Consulted on every device-list update to decide whether our own id needs to
+ *  be re-announced, so it must be cheap and must not generate prekeys the way
+ *  -fetchMyBundle does. If unimplemented, -fetchMyBundle is used as a fallback. */
+- (uint32_t)myDeviceId;
+
 @end
 NS_ASSUME_NONNULL_END
