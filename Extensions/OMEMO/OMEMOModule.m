@@ -374,11 +374,10 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
         if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
             //back to xmppQueue
             [self performBlockAsync:^{
-                OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
+                // The bundle itself is published by OMEMOSignalCoordinator's
+                // publishBundleAfterAuthentication on every authenticate, so publishing
+                // it here too sent it twice.
                 [self fetchDeviceIdsForJID:sender.myJID elementId:nil];
-                if (myBundle) {
-                    [self publishBundle:myBundle elementId:nil];
-                }
             }];
             /*dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), self->moduleQueue, ^{
                 OMEMOBundle *myBundle = [self.omemoStorage fetchMyBundle];
