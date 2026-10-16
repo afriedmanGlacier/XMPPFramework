@@ -264,6 +264,12 @@ NSString *const kXMPPvCardAvatarDisplayElement = @"displayname";
 
 	XMPPJID *jid = [presence from];
     
+    // The server echoes our own presence back to us. Its photo and name come from what we
+    // just sent, so they can't tell us anything new about our vCard.
+    if ([jid isEqualToJID:[xmppStream myJID]]) {
+        return;
+    }
+    
     NSString *savedPhotoHash = [_moduleStorage photoHashForJID:jid xmppStream:xmppStream];
 
 	// check the hash

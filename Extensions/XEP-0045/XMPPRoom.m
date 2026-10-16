@@ -464,6 +464,10 @@ enum XMPPRoomState
 
 - (void)changeNickname:(NSString *)newNickname
 {
+    // Already using it: sending the presence anyway just makes the room echo our presence back.
+    if ([newNickname isEqualToString:myNickname]) {
+        return;
+    }
 	myOldNickname = [myNickname copy];
 	myNickname = [newNickname copy];
     myRoomJID = [XMPPJID jidWithUser:[roomJID user] domain:[roomJID domain] resource:myNickname];
